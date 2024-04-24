@@ -9,7 +9,7 @@ Admin users will have more privileges, primarily access to more information.
 ## User Stories
 ### User
 - As a user, I can register my account. 
--  As a user, I can login to my account.
+- As a user, I can login to my account.
 - As a user, I can update my user information.
 - As a user, I can view my balance and my transaction history.
 - As a user, I can deposit and withdraw money from my balance.
