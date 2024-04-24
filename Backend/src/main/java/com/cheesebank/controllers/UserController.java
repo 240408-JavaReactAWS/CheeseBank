@@ -7,6 +7,7 @@ import com.cheesebank.models.User;
 import com.cheesebank.services.EmailService;
 import com.cheesebank.services.TransactionHistoryService;
 import com.cheesebank.services.UserService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,25 @@ public class UserController {
         this.ths = ths;
         this.emailService = emailService;
     }
+
+    // Matthew code ////////////////////////////////////////
+    @GetMapping("/balance")
+    public ResponseEntity<User> getBalance(@RequestParam int userId) {
+        User user = userService.findByUserId(userId);
+        double currentBalance = user.getBalance();
+
+        return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/freeze")
+    public ResponseEntity<User> freezeAccount(@RequestParam int userId) {
+        User user = userService.findByUserId(userId);
+        user.setFrozen(!user.isFrozen());
+        userService.save(user);
+
+        return ResponseEntity.ok(user);
+    }
+    ////////////////////////////////////////////////////////
 
     @PostMapping("/transaction")
     public ResponseEntity<TransactionHistory> deposit(

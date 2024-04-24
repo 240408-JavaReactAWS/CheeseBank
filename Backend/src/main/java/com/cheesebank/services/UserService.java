@@ -2,8 +2,11 @@ package com.cheesebank.services;
 
 import com.cheesebank.models.User;
 import com.cheesebank.repository.UserRepo;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,4 +28,11 @@ public class UserService {
     public void updateUser(User user) {
         userRepo.save(user);
     }
+
+    // Matthew code ////////////////////////////////////////
+    public void save(User user) {
+    }
+    ////////////////////////////////////////////////////////
+
+
 }
