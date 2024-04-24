@@ -11,6 +11,7 @@ public class TransactionHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Enumerated(EnumType.STRING)
     private TransactionType type;
     private String description;
     private double transaction_amount;
