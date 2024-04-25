@@ -3,15 +3,13 @@ package com.cheesebank.controllers;
 import com.cheesebank.services.TransactionHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/history")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TransactionHistory {
 
     private final TransactionHistoryService ths;
@@ -20,7 +18,7 @@ public class TransactionHistory {
         this.ths = ths;
     }
 
-    @GetMapping("/view/transaction")
+    @GetMapping("/transaction")
     public ResponseEntity<List<com.cheesebank.models.TransactionHistory>> viewTransaction(@RequestParam int userId) {
         List<com.cheesebank.models.TransactionHistory> th = ths.getAllTranByUserId(userId);
         return ResponseEntity.ok(th);

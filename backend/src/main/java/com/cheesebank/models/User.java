@@ -20,7 +20,7 @@ public class User {
     private LocalDate dob;
     private long phoneNumber;
     private String token;
-    private boolean isFrozen;
+    private boolean isIsFrozen;
     private double balance;
 
 
@@ -38,7 +38,7 @@ public class User {
         this.dob = dob;
         this.phoneNumber = phoneNumber;
         this.token = token;
-        this.isFrozen = isFrozen;
+        this.isIsFrozen = isFrozen;
         this.balance =balance;
     }
 
@@ -115,11 +115,11 @@ public class User {
     }
 
     public boolean isFrozen() {
-        return isFrozen;
+        return isIsFrozen;
     }
 
     public void setFrozen(boolean frozen) {
-        isFrozen = frozen;
+        isIsFrozen = frozen;
     }
 
     public double getBalance() {
@@ -135,12 +135,12 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && phoneNumber == user.phoneNumber && isFrozen == user.isFrozen && Double.compare(user.balance, balance) == 0 && Objects.equals(first_name, user.first_name) && Objects.equals(last_name, user.last_name) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(dob, user.dob) && Objects.equals(token, user.token);
+        return id == user.id && phoneNumber == user.phoneNumber && isIsFrozen == user.isIsFrozen && Double.compare(user.balance, balance) == 0 && Objects.equals(first_name, user.first_name) && Objects.equals(last_name, user.last_name) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(dob, user.dob) && Objects.equals(token, user.token);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, first_name, last_name, username, password, email, dob, phoneNumber, token, isFrozen, balance);
+        return Objects.hash(id, first_name, last_name, username, password, email, dob, phoneNumber, token, isIsFrozen, balance);
     }
 
     @Override
@@ -155,7 +155,7 @@ public class User {
                 ", dob=" + dob +
                 ", phoneNumber=" + phoneNumber +
                 ", token='" + token + '\'' +
-                ", isFrozen=" + isFrozen +
+                ", isFrozen=" + isIsFrozen +
                 ", balance=" + balance +
                 '}';
     }

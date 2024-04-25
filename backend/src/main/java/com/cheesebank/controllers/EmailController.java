@@ -1,11 +1,13 @@
 package com.cheesebank.controllers;
 
 import com.cheesebank.services.EmailService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(name="api/v1/email")
+@CrossOrigin(origins = "http://localhost:3000")
 public class EmailController {
 
     private EmailService emailService;

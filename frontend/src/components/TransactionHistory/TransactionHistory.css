@@ -1,0 +1,20 @@
+h1 {
+    font-size: 28px;
+    padding-left: 20px;
+}
+
+th,
+td {
+    text-align: center;
+    font-size: 14px;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #f0f0f0;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #ace2f2;
+}
