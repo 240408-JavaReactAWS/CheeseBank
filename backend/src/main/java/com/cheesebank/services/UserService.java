@@ -1,5 +1,6 @@
 package com.cheesebank.services;
 
+import com.cheesebank.exceptions.UserNotFoundException;
 import com.cheesebank.models.User;
 import com.cheesebank.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,16 @@ public class UserService {
 
     }
 
-    public void updateUser(User user) {
-        userRepo.save(user);
+    public User updateUser(User user) {
+        Optional<User> updateUser = userRepo.findById(user.getId());
+
+        if (!updateUser.isPresent()){
+//            userRepo.save(user);
+            throw new UserNotFoundException("User not found");
+        }
+
+//        userRepo.save(user);
+        return userRepo.save(user);
     }
 
     // Matthew code ////////////////////////////////////////
