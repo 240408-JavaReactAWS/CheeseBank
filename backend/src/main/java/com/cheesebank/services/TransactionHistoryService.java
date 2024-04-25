@@ -1,5 +1,6 @@
 package com.cheesebank.services;
 
+import com.cheesebank.exceptions.TransactionHistoryNotFoundException;
 import com.cheesebank.models.TransactionHistory;
 import com.cheesebank.models.TransactionType;
 import com.cheesebank.models.User;
@@ -7,6 +8,7 @@ import com.cheesebank.repository.TransactionHistoryRepo;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class TransactionHistoryService {
@@ -31,4 +33,13 @@ public class TransactionHistoryService {
 
         return newTransaction;
     }
+
+    public List<TransactionHistory> getAllTranByUserId(int userId) {
+        List<TransactionHistory> list = thr.findAllByUserId(userId);
+        if(list.isEmpty() || list == null ){
+            throw new TransactionHistoryNotFoundException("No transaction history was not found");
+        }
+        return list;
+    }
+
 }
