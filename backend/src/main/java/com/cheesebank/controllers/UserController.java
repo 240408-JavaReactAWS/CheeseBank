@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
@@ -80,5 +81,53 @@ public class UserController {
         TransactionHistory th = ths.logTransaction(type,description,amount, currentBalance,user);
 
         return ResponseEntity.status(HttpStatus.OK).body(th);
+    } //note from sav: this brace corresponds to the one on ln 58, "@RequestParam String type) {". if this was not intentional, this may cause compile issues
+
+
+    //SAV USER STORIES
+    //User story 1: As a user, I can register my account.
+    //note code mostly copied from my proj0
+    @PostMapping
+    public ResponseEntity<User> createUserHandler(@RequestBody User user) {
+
+        User newUser;
+        try {
+            newUser = this.userService.createUserAccount(user);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<User>(user, HttpStatus.CREATED);
+    }
+
+    //User story 2: As a user, I can log in to my account.
+    //note code mostly copied from my proj0
+    @PostMapping({"/login"})
+    public ResponseEntity<User> userLoginHandler(@RequestBody User user) {
+        User returnedUser;
+        try {
+            returnedUser = this.userService.findUserByUsernameAndPassword(user.getUsername(), user.getPassword());
+        }
+        catch (Exception e) {
+            return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
+        }
+        return new ResponseEntity<User>(returnedUser, HttpStatus.OK);
+    }
+
+    //User story 3: As a user, I can update my personal information such as name,email, and phone number.
+    @PutMapping({"/update"})
+    public ResponseEntity<User> updateUserInfo(@RequestBody User user){
+        //validate user entity. if user exists, then can update it
+        User updatedUser;
+
+        try{
+            updatedUser = this.userService.updateUser(user);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
+        }
+
+
+        return new ResponseEntity<User>(updatedUser, HttpStatus.OK);
     }
 }
