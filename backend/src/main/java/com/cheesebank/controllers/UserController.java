@@ -83,10 +83,16 @@ public class UserController {
             throw new TransactionCannotBeProcessException("You cannot transfer $" + amount + " due to insufficient funds");
         }
 
+
         sender.setBalance(senderBalance - amount);
         receiver.setBalance(receiverBalance + amount);
+
+        if((senderBalance - amount) < 100){
+            emailService.sendEmail(emailFrom, "Low Balance Notification", "Dear "+ sender.getFirst_name() +","+ "\n\n" + "Your balance is below the maintaining limit.\n\nPlease deposit to your account within 7 days to avoid penalties\n\nCheese Bank");
+        }
         userService.updateUser(sender);
         userService.updateUser(receiver);
+
         emailService.sendEmail(emailFrom, "Transfer Notification", "Dear "+ sender.getFirst_name() +","+ "\n\n$" + amount + " has been transferred from your account.\n\nCheese Bank");
         emailService.sendEmail(emailTo, "Transfer Notification", "Dear "+ receiver.getFirst_name() +","+ "\n\n$" + amount + " has been transferred to your account.\n\nCheese Bank");
 
@@ -117,6 +123,10 @@ public class UserController {
                 throw new TransactionCannotBeProcessException("You cannot withdraw $" + amount + " due to insufficient funds");
             }
             user.setBalance(currentBalance - amount);
+
+            if((currentBalance - amount)  < 100){
+                emailService.sendEmail(email, "Low Balance Notification", "Dear "+ user.getFirst_name() +","+ "\n\n" + "Your balance is below the maintaining limit.\n\nPlease deposit to your account within 7 days to avoid penalties\n\nCheese Bank");
+            }
             emailService.sendEmail(email, "Withdrawal Notification", "Dear "+ user.getFirst_name() +","+ "\n\n$" + amount + " has been withdrawn from your account.\n\nCheese Bank");
         } else {
             throw new IllegalArgumentException("Invalid transaction type: " + type);

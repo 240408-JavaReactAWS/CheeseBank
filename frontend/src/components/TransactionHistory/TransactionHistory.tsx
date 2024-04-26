@@ -14,7 +14,9 @@ function TransactionHistory(props: TransactionHistoryProps) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [user, setUser] = useState<User>();
-    const [userId, setUserId] = useState(0);
+    const [searchValue, setSearchValue] = useState("");
+    const [searchText, setSearchText] = useState('');
+    const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
 
     useEffect(() => {
     
@@ -27,6 +29,7 @@ function TransactionHistory(props: TransactionHistoryProps) {
                 .then((response) => {
                 let data = response.data;
                     setTransactions(data);
+                    setFilteredTransactions(data);
                     setUser(data[0].user);
                     setLoading(false);
                 })
@@ -60,12 +63,39 @@ function TransactionHistory(props: TransactionHistoryProps) {
     link.click();
 };
 
+  const search = (searchText) => {
+
+    const filteredTransactions = transactions.filter(transaction => {
+      const description = transaction.description ? transaction.description.toLowerCase() : '';
+      const type = transaction.type? transaction.type.toLowerCase() : '';
+
+      return description.includes(searchText.toLowerCase()) ||
+             type.includes(searchText.toLowerCase());
+    });
+
+    setFilteredTransactions(filteredTransactions);
+  }
+
+  const handleSearchInputChange = (e) => {
+    const searchValue = e.target.value;
+    setSearchText(searchValue);
+
+    // Call the search function with the updated search value
+    search(searchValue);
+  }
+
 
 
 
     return (
         <div className='transaction-history'>
-            <h2>Transaction History</h2>
+            <h2>Transaction History</h2> 
+ <input
+        type="text"
+        value={searchText}
+        onChange={handleSearchInputChange}
+        placeholder="Search..."
+      />
             <h4>Name: <span>{user?.first_name} {user?.last_name}</span> </h4>
       
             {loading && <p>Loading...</p>}
@@ -83,7 +113,7 @@ function TransactionHistory(props: TransactionHistoryProps) {
                     </tr>
                 </thead>
                 <tbody>
-                    {transactions.map((transaction) => {
+                    {filteredTransactions.map((transaction) => {
                         return (
                           
                             <tr key={transaction.id}>

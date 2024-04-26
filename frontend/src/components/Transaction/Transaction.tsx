@@ -21,7 +21,6 @@ function Transaction() {
     const[amount, setAmount] = useState(0);
     const[transactionType, setTransactionType] = useState("");
     const[description, setDescription] = useState("");
-
     const[user,setUser] =useState<User>()
 
 
