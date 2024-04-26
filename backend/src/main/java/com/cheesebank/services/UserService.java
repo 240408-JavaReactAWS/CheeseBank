@@ -47,33 +47,38 @@ public class UserService {
     }
     ////////////////////////////////////////////////////////
 
-    //Sav's code
-    public User findUserByUsernameAndPassword(String username, String password) {
-        Optional<User> optionalUser = userRepo.findUserByUsernameAndPassword(username, password);
-
-        if (optionalUser.isPresent()){
-            User myUser = optionalUser.get();
-            return myUser;
-        }
-        else{
-            return null;
-        }
-    }
-
     //User story 1: As a user, I can register my account.
     public User createUserAccount(User user){
         return this.userRepo.save(user);
     }
 
     //User story 2: As a user, I can log in to my account.
-    public User processLogin(User user){
-        User myUser = findUserByUsernameAndPassword(user.getUsername(), user.getPassword());
+    //Sav's code
+    public Optional<User> findUserByUsernameAndPassword(String username, String password) {
 
-        if (myUser != null){
-            return myUser;
+         Optional<User> user = Optional.ofNullable(userRepo.findByUsernameAndPassword(username, password));
+            return user;
+    }
+
+    public User findByUsername(String username) {
+        Optional<User> user = userRepo.findByUsername(username);
+
+        if (user.isPresent()){
+            return user.get();
         }
         else{
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new UserNotFoundException("User not found");
+        }
+    }
+
+    public User findByEmail(String email) {
+        Optional<User> user = userRepo.findByEmail(email);
+
+        if (user.isPresent()){
+            return user.get();
+        }
+        else{
+            throw new UserNotFoundException("User not found");
         }
     }
 

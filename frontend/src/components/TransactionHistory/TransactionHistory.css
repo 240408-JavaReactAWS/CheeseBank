@@ -3,12 +3,26 @@ h1 {
     padding-left: 20px;
 }
 
+.transaction-history {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 5px;
+    position: relative;
+}
+
+.description {
+    width: 350px;
+}
+
 th,
 td {
     text-align: center;
     font-size: 14px;
     padding: 10px;
     border: 1px solid black;
+    align-items: center;
+    align-content: center;
 }
 
 tbody tr:nth-child(odd) {
@@ -17,4 +31,11 @@ tbody tr:nth-child(odd) {
 
 tbody tr:nth-child(even) {
     background-color: #ace2f2;
+}
+
+.download-btn {
+    padding: 5px 10px;
+    font-size: 10px;
+    cursor: pointer;
+    border-radius: 5px;
 }

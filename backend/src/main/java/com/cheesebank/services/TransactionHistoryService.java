@@ -8,6 +8,8 @@ import com.cheesebank.repository.TransactionHistoryRepo;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -34,11 +36,19 @@ public class TransactionHistoryService {
         return newTransaction;
     }
 
-    public List<TransactionHistory> getAllTranByUserId(int userId) {
-        List<TransactionHistory> list = thr.findAllByUserId(userId);
+    public List<TransactionHistory> getAllTranByUsername(String username) {
+        List<TransactionHistory> list = thr.findAllByUserUsername(username);
         if(list.isEmpty() || list == null ){
             throw new TransactionHistoryNotFoundException("No transaction history was not found");
         }
+
+        Collections.sort(list, new Comparator<TransactionHistory>() {
+            @Override
+            public int compare(TransactionHistory t1, TransactionHistory t2) {
+                return t2.getTimeStamp().compareTo(t1.getTimeStamp());
+            }
+        });
+
         return list;
     }
 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/user")
@@ -51,6 +52,51 @@ public class UserController {
     }
     ////////////////////////////////////////////////////////
 
+
+
+    @GetMapping("/username")
+    public ResponseEntity<User> getUserByUsername(@RequestParam String username) {
+        User user = userService.findByUsername(username);
+        return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<TransactionHistory> transfer(
+            @RequestParam double amount,
+            @RequestParam String emailFrom,
+            @RequestParam String emailTo,
+            @RequestParam String description) {
+
+        User receiver= userService.findByEmail(emailTo);
+        User sender = userService.findByEmail(emailFrom);
+        double senderBalance = sender.getBalance();
+        double receiverBalance = receiver.getBalance();
+
+        boolean isSameEmail = emailFrom.equals(emailTo) ? true : false;
+        if (isSameEmail) {
+            emailService.sendEmail(emailFrom, "Transfer Notification Error", "Dear "+ sender.getFirst_name() +","+ "\n\nYou cannot transfer to your own account.\n\nCheese Bank");
+            throw new TransactionCannotBeProcessException("You cannot transfer to your own account");
+        }
+
+        if (senderBalance < amount) {
+            emailService.sendEmail(emailFrom, "Insufficient Funds Notification", "Dear "+ sender.getFirst_name() +","+ "\n\nYou cannot transfer $" + amount + " due to insufficient funds.\n\nCheese Bank");
+            throw new TransactionCannotBeProcessException("You cannot transfer $" + amount + " due to insufficient funds");
+        }
+
+        sender.setBalance(senderBalance - amount);
+        receiver.setBalance(receiverBalance + amount);
+        userService.updateUser(sender);
+        userService.updateUser(receiver);
+        emailService.sendEmail(emailFrom, "Transfer Notification", "Dear "+ sender.getFirst_name() +","+ "\n\n$" + amount + " has been transferred from your account.\n\nCheese Bank");
+        emailService.sendEmail(emailTo, "Transfer Notification", "Dear "+ receiver.getFirst_name() +","+ "\n\n$" + amount + " has been transferred to your account.\n\nCheese Bank");
+
+        TransactionHistory th = ths.logTransaction("TRANSFER",description,amount, senderBalance,sender);
+       ths.logTransaction("TRANSFER",description,amount, receiverBalance,receiver);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(th);
+    }
+
     @PostMapping("/transaction")
     public ResponseEntity<TransactionHistory> deposit(
             @RequestParam int userId,
@@ -64,14 +110,14 @@ public class UserController {
 
         if ("DEPOSIT".equals(type)) {
             user.setBalance(currentBalance + amount);
-            emailService.sendEmail(email, "Deposit Notification", "Dear Customer,\n\n$" + amount + " has been deposited to your account.\n\nCheese Bank");
+            emailService.sendEmail(email, "Deposit Notification", "Dear "+ user.getFirst_name() +","+ "\n\n$" + amount + " has been deposited to your account.\n\nCheese Bank");
         } else if ("WITHDRAWAL".equals(type)) {
             if (currentBalance < amount) {
-                emailService.sendEmail(email, "Insufficient Funds Notification", "Dear Customer,\n\nYou cannot withdraw from your account due to insufficient funds.\n\nCheese Bank");
+                emailService.sendEmail(email, "Insufficient Funds Notification", "Dear "+ user.getFirst_name() +","+ "\n\nYou cannot withdraw from your account due to insufficient funds.\n\nCheese Bank");
                 throw new TransactionCannotBeProcessException("You cannot withdraw $" + amount + " due to insufficient funds");
             }
             user.setBalance(currentBalance - amount);
-            emailService.sendEmail(email, "Withdrawal Notification", "Dear Customer,\n\n$" + amount + " has been withdrawn from your account.\n\nCheese Bank");
+            emailService.sendEmail(email, "Withdrawal Notification", "Dear "+ user.getFirst_name() +","+ "\n\n$" + amount + " has been withdrawn from your account.\n\nCheese Bank");
         } else {
             throw new IllegalArgumentException("Invalid transaction type: " + type);
         }
@@ -102,17 +148,18 @@ public class UserController {
 
     //User story 2: As a user, I can log in to my account.
     //note code mostly copied from my proj0
-    @PostMapping({"/login"})
+    @PostMapping("/login")
     public ResponseEntity<User> userLoginHandler(@RequestBody User user) {
-        User returnedUser;
-        try {
-            returnedUser = this.userService.findUserByUsernameAndPassword(user.getUsername(), user.getPassword());
+       Optional<User> optionalUser = userService.findUserByUsernameAndPassword(user.getUsername(), user.getPassword());
+
+        if (optionalUser.isPresent()) {
+            return new ResponseEntity<>(optionalUser.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        catch (Exception e) {
-            return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
-        }
-        return new ResponseEntity<User>(returnedUser, HttpStatus.OK);
     }
+
+
 
     //User story 3: As a user, I can update my personal information such as name,email, and phone number.
     @PutMapping({"/update"})

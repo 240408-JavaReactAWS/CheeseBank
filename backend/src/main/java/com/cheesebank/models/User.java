@@ -1,5 +1,7 @@
 package com.cheesebank.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -14,8 +16,11 @@ public class User {
     private int id;
     private String first_name;
     private String last_name;
+    @Column(unique = true)
     private String username;
+    @JsonIgnore
     private String password;
+    @Column(unique = true)
     private String email;
     private LocalDate dob;
     private long phoneNumber;

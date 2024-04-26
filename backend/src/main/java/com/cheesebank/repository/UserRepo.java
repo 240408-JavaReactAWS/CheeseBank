@@ -12,6 +12,10 @@ public interface UserRepo extends JpaRepository<User, Integer> {
     @Query("From User WHERE username = :usernameVar AND password = :passwordVar")
     User findByUsernameAndPassword(@Param("usernameVar") String username, @Param("passwordVar") String password);
 
+    boolean existsByUsernameAndPassword(String username, String password);
+
     Optional<User> findUserByUsernameAndPassword(String username, String password);
-    //double check the find by user and password...
+
+    Optional<User> findByUsername(String username);
+    Optional<User> findByEmail(String email);
 }

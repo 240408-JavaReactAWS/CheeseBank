@@ -19,8 +19,9 @@ public class TransactionHistory {
     }
 
     @GetMapping("/transaction")
-    public ResponseEntity<List<com.cheesebank.models.TransactionHistory>> viewTransaction(@RequestParam int userId) {
-        List<com.cheesebank.models.TransactionHistory> th = ths.getAllTranByUserId(userId);
+    public ResponseEntity<List<com.cheesebank.models.TransactionHistory>> viewTransaction(@RequestParam String username) {
+        List<com.cheesebank.models.TransactionHistory> th = ths.getAllTranByUsername(username);
+
         return ResponseEntity.ok(th);
     }
 

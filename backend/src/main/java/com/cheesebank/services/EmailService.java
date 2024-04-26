@@ -16,6 +16,7 @@ public class EmailService {
     private UserRepo userRepo;
     private TransactionHistoryRepo transactionHistoryRepo;
 
+    @Autowired
     public EmailService(JavaMailSender javaMailSender, UserRepo userRepo, TransactionHistoryRepo transactionHistoryRepo) {
         this.javaMailSender = javaMailSender;
         this.userRepo = userRepo;
