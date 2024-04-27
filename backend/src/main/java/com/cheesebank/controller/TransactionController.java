@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("api/v2/transactions")
 @CrossOrigin(
@@ -134,14 +136,14 @@ public class TransactionController {
 
     // View all transactions of a time range
     @GetMapping("/history/{startDate}/{endDate}")
-    public ResponseEntity<Page<Transaction>> viewTransactionHistory(@PathVariable String startDate, @PathVariable String endDate, HttpSession session, Pageable pageable) {
+    public ResponseEntity<Page<Transaction>> viewTransactionHistory(@RequestBody LocalDateTime startDate, @RequestBody LocalDateTime endDate, HttpSession session, Pageable pageable) {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
             System.out.println("Unauthorized access");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Page<Transaction> transactionHistory = transactionService.getAllTransactions(sessionUser, pageable);
+        Page<Transaction> transactionHistory = transactionService.getTransactionsByTimeRange(sessionUser, startDate, endDate, pageable);
         if (transactionHistory.isEmpty()) {
             System.out.println("No transactions found");
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
