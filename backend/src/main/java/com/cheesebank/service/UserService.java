@@ -27,28 +27,6 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Find user by username
-    @Transactional(readOnly = true)
-    public Optional<User> findByUsername(String username) throws UserNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User not found");
-        }
-
-        return userRepository.findByUsername(username);
-    }
-
-    // Find user by email
-    @Transactional(readOnly = true)
-    public Optional<User> findByEmail(String email) throws UserNotFoundException {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User not found");
-        }
-
-        return userRepository.findByEmail(email);
-    }
-
     // Register new user
     @Transactional
     public User registerUser(User newUser) throws UsernameAlreadyTakenException, EmailAlreadyTakenException, PhoneAlreadyTakenException {
@@ -74,12 +52,14 @@ public class UserService {
 
     // Login user
     @Transactional
-    public User login(String username, String password) throws InvalidCredentialsException {
+    public User loginUser(User returningUser) throws InvalidCredentialsException {
+        String username = returningUser.getUsername();
         Optional<User> possibleUser = userRepository.findByUsername(username);
         if (possibleUser.isEmpty()) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
 
+        String password = returningUser.getPassword();
         User returnedUser = possibleUser.get();
         if (!passwordEncoder.matches(password, returnedUser.getPassword())) {
             throw new InvalidCredentialsException("Invalid username or password");
@@ -108,6 +88,46 @@ public class UserService {
     public User getUser(User user) throws UserNotFoundException {
         return userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    // Find user by ID
+    @Transactional(readOnly = true)
+    public User findById(int id) throws UserNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    // Find user by username
+    @Transactional(readOnly = true)
+    public Optional<User> findByUsername(String username) throws UserNotFoundException {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        return userRepository.findByUsername(username);
+    }
+
+    // Find user by email
+    @Transactional(readOnly = true)
+    public Optional<User> findByEmail(String email) throws UserNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        return userRepository.findByEmail(email);
+    }
+
+    // Find user by phone
+    @Transactional(readOnly = true)
+    public Optional<User> findByPhone(String phone) throws UserNotFoundException {
+        Optional<User> user = userRepository.findByPhone(phone);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        return userRepository.findByPhone(phone);
     }
 
     // View all users' information (ADMIN ONLY)
@@ -150,7 +170,7 @@ public class UserService {
         return userRepository.save(existingUser);
     }
 
-    // Freeze user account
+    // Freeze account
     @Transactional
     public User freezeUser(User user) throws UserNotFoundException {
         User existingUser = userRepository.findById(user.getId())
@@ -162,13 +182,12 @@ public class UserService {
 
     // Freeze any user account (ADMIN ONLY)
     @Transactional
-    public User freezeAnyUser(User user) throws UserNotFoundException, AccessDeniedException {
+    public User freezeAnyUser(User user, String username) throws UserNotFoundException, AccessDeniedException {
         if (user.getUserType() != UserType.ADMIN) {
             throw new AccessDeniedException("You do not have admin privileges.");
         }
 
-        int id = user.getId();
-        User existingUser = userRepository.findById(id)
+        User existingUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         existingUser.setFrozen(!existingUser.getFrozen());

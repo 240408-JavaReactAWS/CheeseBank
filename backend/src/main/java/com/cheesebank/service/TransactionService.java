@@ -66,19 +66,19 @@ public class TransactionService {
         return savedTransaction;
     }
 
-    // Find all transactions by user
+    // View transaction history
     @Transactional(readOnly = true)
     public Page<Transaction> getAllTransactions(User currentUser, Pageable pageable) {
         return transactionRepository.findByUser(currentUser, pageable);
     }
 
-    // Find all transactions by user and time range
+    // View all transactions of a time range
     @Transactional(readOnly = true)
     public Page<Transaction> getTransactionsByTimeRange(User currentUser, LocalDateTime start, LocalDateTime end, Pageable pageable) {
         return transactionRepository.findByUserAndTimeStampBetween(currentUser, start, end, pageable);
     }
 
-    // Find all transactions by user and transaction type
+    // View all transactions of a type
     @Transactional(readOnly = true)
     public Page<Transaction> getTransactionsByType(User currentUser, TransactionType transactionType, Pageable pageable) {
         return transactionRepository.findByUserAndTransactionType(currentUser, transactionType, pageable);

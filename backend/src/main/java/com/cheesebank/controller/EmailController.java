@@ -1,6 +1,6 @@
-package com.cheesebank.controllers;
+package com.cheesebank.controller;
 
-import com.cheesebank.services.EmailService;
+import com.cheesebank.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
