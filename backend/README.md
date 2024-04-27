@@ -21,7 +21,10 @@ The CheeseBank API provides a set of endpoints for managing user accounts, fund 
 ## Installation
 1. Clone the repository: `git clone https://github.com/240408-JavaReactAWS/CheeseBank.git`
 2. Navigate to the project directory: `cd CheeseBank/backend`
-3. Configure PostgreSQL database in: `src/main/resources/application.properties`
+3. Configure the environment variables: `src/main/resources/application.properties`
+   - PostgreSQL
+   - Email service
+   - Frontend URL
 4. Build and run the project: `mvn spring-boot:run`
 
 ## User Stories
