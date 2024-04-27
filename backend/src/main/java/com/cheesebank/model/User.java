@@ -1,4 +1,4 @@
-package com.cheesebank.models;
+package com.cheesebank.model;
 
 import jakarta.persistence.*;
 

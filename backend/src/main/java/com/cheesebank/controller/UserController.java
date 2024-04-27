@@ -1,20 +1,15 @@
 package com.cheesebank.controllers;
 
 import com.cheesebank.exceptions.TransactionCannotBeProcessException;
-import com.cheesebank.models.TransactionHistory;
-import com.cheesebank.models.TransactionType;
 import com.cheesebank.models.User;
 import com.cheesebank.services.EmailService;
 import com.cheesebank.services.TransactionHistoryService;
 import com.cheesebank.services.UserService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController

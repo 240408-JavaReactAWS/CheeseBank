@@ -1,4 +1,4 @@
-package com.cheesebank.models;
+package com.cheesebank.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;

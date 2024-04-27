@@ -1,7 +1,7 @@
 package com.cheesebank.services;
 
-import com.cheesebank.repository.TransactionHistoryRepo;
-import com.cheesebank.repository.UserRepo;
+import com.cheesebank.repository.TransactionRepository;
+import com.cheesebank.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,11 +13,11 @@ public class EmailService {
 
     @Autowired
     private JavaMailSender javaMailSender;
-    private UserRepo userRepo;
-    private TransactionHistoryRepo transactionHistoryRepo;
+    private UserRepository userRepo;
+    private TransactionRepository transactionHistoryRepo;
 
     @Autowired
-    public EmailService(JavaMailSender javaMailSender, UserRepo userRepo, TransactionHistoryRepo transactionHistoryRepo) {
+    public EmailService(JavaMailSender javaMailSender, UserRepository userRepo, TransactionRepository transactionHistoryRepo) {
         this.javaMailSender = javaMailSender;
         this.userRepo = userRepo;
         this.transactionHistoryRepo = transactionHistoryRepo;

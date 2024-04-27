@@ -1,25 +1,20 @@
 package com.cheesebank.services;
 
-import com.cheesebank.exceptions.UserNotFoundException;
-import com.cheesebank.models.User;
-import com.cheesebank.repository.UserRepo;
+import com.cheesebank.exception.UserNotFoundException;
+import com.cheesebank.model.User;
+import com.cheesebank.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
-    private UserRepo userRepo;
+    private UserRepository userRepo;
 
     @Autowired
-    public UserService(UserRepo userRepo) {
+    public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
 

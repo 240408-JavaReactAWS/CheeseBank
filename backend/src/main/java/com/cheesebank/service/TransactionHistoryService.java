@@ -1,10 +1,9 @@
 package com.cheesebank.services;
 
-import com.cheesebank.exceptions.TransactionHistoryNotFoundException;
-import com.cheesebank.models.TransactionHistory;
-import com.cheesebank.models.TransactionType;
-import com.cheesebank.models.User;
-import com.cheesebank.repository.TransactionHistoryRepo;
+import com.cheesebank.exception.TransactionHistoryNotFoundException;
+import com.cheesebank.model.TransactionType;
+import com.cheesebank.model.User;
+import com.cheesebank.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,9 +14,9 @@ import java.util.List;
 @Service
 public class TransactionHistoryService {
 
-    private final TransactionHistoryRepo thr;
+    private final TransactionRepository thr;
 
-    public TransactionHistoryService(TransactionHistoryRepo thr) {
+    public TransactionHistoryService(TransactionRepository thr) {
         this.thr = thr;
     }
 
