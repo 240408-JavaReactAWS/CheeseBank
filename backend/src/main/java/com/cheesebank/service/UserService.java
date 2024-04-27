@@ -19,6 +19,8 @@ public class UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
+    private EmailService emailService;
+
     @Autowired
     public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -46,6 +48,7 @@ public class UserService {
 
         return userRepository.findByEmail(email);
     }
+
     // Register new user
     @Transactional
     public User registerUser(User newUser) throws UsernameAlreadyTakenException, EmailAlreadyTakenException, PhoneAlreadyTakenException {
@@ -73,7 +76,7 @@ public class UserService {
     @Transactional
     public User login(String username, String password) throws InvalidCredentialsException {
         Optional<User> possibleUser = userRepository.findByUsername(username);
-        if (!possibleUser.isPresent()) {
+        if (possibleUser.isEmpty()) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
 
@@ -83,6 +86,21 @@ public class UserService {
         }
 
         return returnedUser;
+    }
+
+    // Reset password
+    @Transactional
+    public User resetPassword(String username, String newPassword) throws UserNotFoundException {
+        Optional<User> possibleUser = userRepository.findByUsername(username);
+        if (possibleUser.isEmpty()) {
+            throw new UserNotFoundException("Invalid username");
+        }
+
+        User user = possibleUser.get();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        emailService.sendPasswordChangeEmail(user);
+        return user;
     }
 
     // View user information
@@ -128,6 +146,7 @@ public class UserService {
         existingUser.setUsername(updatedUser.getUsername());
         existingUser.setEmail(updatedUser.getEmail());
         existingUser.setPhone(updatedUser.getPhone());
+        emailService.sendAccountUpdateEmail(existingUser);
         return userRepository.save(existingUser);
     }
 

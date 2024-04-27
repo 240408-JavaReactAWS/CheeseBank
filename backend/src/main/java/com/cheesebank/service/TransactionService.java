@@ -20,7 +20,10 @@ import java.time.LocalDateTime;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
+
     private final UserRepository userRepository;
+
+    private EmailService emailService;
 
     @Autowired
     public TransactionService(TransactionRepository transactionRepository, UserRepository userRepository) {
@@ -59,7 +62,7 @@ public class TransactionService {
                 ? user.getBalance().add(transaction.getAmount())
                 : user.getBalance().subtract(transaction.getAmount()));
         userRepository.save(user);
-
+        emailService.sendTransactionEmail(user, savedTransaction);
         return savedTransaction;
     }
 
