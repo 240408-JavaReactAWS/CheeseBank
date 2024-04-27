@@ -1,10 +1,6 @@
 package com.cheesebank.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import org.springframework.cglib.core.Local;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -87,8 +83,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        this.password = passwordEncoder.encode(password);
+        this.password = password;
     }
 
     public String getFirstName() {
@@ -162,18 +157,19 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(username, user.username) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(dob, user.dob) && Objects.equals(phone, user.phone) && Objects.equals(balance, user.balance) && userType == user.userType && Objects.equals(isFrozen, user.isFrozen);
+        return id == user.id && username.equals(user.username) && password.equals(user.password) && firstName.equals(user.firstName) && lastName.equals(user.lastName) && email.equals(user.email) && dob.equals(user.dob) && phone.equals(user.phone) && balance.equals(user.balance) && userType == user.userType && isFrozen.equals(user.isFrozen);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, firstName, lastName, email, dob, phone, balance, userType, isFrozen);
+        return Objects.hash(id, username, password, lastName, email, dob, phone, balance, userType, isFrozen);
     }
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
