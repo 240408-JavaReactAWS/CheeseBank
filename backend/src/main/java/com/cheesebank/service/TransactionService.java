@@ -1,4 +1,4 @@
-package com.cheesebank.services;
+package com.cheesebank.service;
 
 import com.cheesebank.exception.TransactionHistoryNotFoundException;
 import com.cheesebank.model.TransactionType;
