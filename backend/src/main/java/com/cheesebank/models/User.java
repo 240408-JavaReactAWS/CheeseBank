@@ -3,7 +3,10 @@ package com.cheesebank.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.springframework.cglib.core.Local;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -14,36 +17,53 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String first_name;
-    private String last_name;
-    @Column(unique = true)
+
+    @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false)
     private String password;
-    @Column(unique = true)
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private LocalDate dob;
-    private long phoneNumber;
-    private String token;
-    private boolean isIsFrozen;
-    private double balance;
 
+    @Column(nullable = false, unique = true)
+    private String phone;
 
-    public User(){
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal balance;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserType userType;
+
+    @Column(nullable = false)
+    private Boolean isFrozen;
+
+    public User() {
     }
 
-    public User(int id, String first_name, String last_name, String username, String password, String email, LocalDate dob, long phoneNumber, String token, boolean isFrozen, double balance) {
+    public User(int id, String username, String password, String firstName, String lastName, String email, LocalDate dob, String phone, BigDecimal balance, UserType userType, Boolean isFrozen) {
         this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
         this.username = username;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.dob = dob;
-        this.phoneNumber = phoneNumber;
-        this.token = token;
-        this.isIsFrozen = isFrozen;
-        this.balance =balance;
+        this.phone = phone;
+        this.balance = balance;
+        this.userType = userType;
+        this.isFrozen = isFrozen;
     }
 
     public int getId() {
@@ -52,22 +72,6 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
     }
 
     public String getUsername() {
@@ -83,7 +87,24 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        this.password = passwordEncoder.encode(password);
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -102,65 +123,65 @@ public class User {
         this.dob = dob;
     }
 
-    public long getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPhoneNumber(long phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public boolean isFrozen() {
-        return isIsFrozen;
-    }
-
-    public void setFrozen(boolean frozen) {
-        isIsFrozen = frozen;
-    }
-
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    public Boolean getFrozen() {
+        return isFrozen;
+    }
+
+    public void setFrozen(Boolean frozen) {
+        isFrozen = frozen;
+    }
+
+    // Helper Methods
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && phoneNumber == user.phoneNumber && isIsFrozen == user.isIsFrozen && Double.compare(user.balance, balance) == 0 && Objects.equals(first_name, user.first_name) && Objects.equals(last_name, user.last_name) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(dob, user.dob) && Objects.equals(token, user.token);
+        return id == user.id && Objects.equals(username, user.username) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(dob, user.dob) && Objects.equals(phone, user.phone) && Objects.equals(balance, user.balance) && userType == user.userType && Objects.equals(isFrozen, user.isFrozen);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, first_name, last_name, username, password, email, dob, phoneNumber, token, isIsFrozen, balance);
+        return Objects.hash(id, username, firstName, lastName, email, dob, phone, balance, userType, isFrozen);
     }
-
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", first_name='" + first_name + '\'' +
-                ", last_name='" + last_name + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", dob=" + dob +
-                ", phoneNumber=" + phoneNumber +
-                ", token='" + token + '\'' +
-                ", isFrozen=" + isIsFrozen +
+                ", phone='" + phone + '\'' +
                 ", balance=" + balance +
+                ", userType=" + userType +
+                ", isFrozen=" + isFrozen +
                 '}';
     }
 }
