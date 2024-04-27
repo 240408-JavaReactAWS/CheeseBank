@@ -1,7 +1,8 @@
-package com.cheesebank.exceptions;
+package com.cheesebank.exception;
 
-public class UserNotFoundException extends RuntimeException {
-    public UserNotFoundException(String userNotFound) {
-        super(userNotFound);
+public class UserNotFoundException extends Exception {
+
+    public UserNotFoundException(String message) {
+        super(message);
     }
 }
