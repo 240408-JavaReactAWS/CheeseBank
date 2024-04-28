@@ -192,8 +192,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        User frozenUser = userService.freezeUser(user);
-        System.out.println("Account frozen");
+        User frozenUser = userService.freezeUser(sessionUser);
+        System.out.println("Toggled account freeze");
         return ResponseEntity.ok(frozenUser);
     }
 
@@ -208,7 +208,7 @@ public class UserController {
         User frozenUser = userService.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         userService.freezeUser(frozenUser);
-        System.out.println("Account frozen");
+        System.out.println("Toggled account freeze");
         return ResponseEntity.ok(frozenUser);
     }
 
