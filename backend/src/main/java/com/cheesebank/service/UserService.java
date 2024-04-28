@@ -202,11 +202,7 @@ public class UserService {
 
     // Delete user account (ADMIN ONLY)
     @Transactional
-    public void deleteUser(User user) throws UserNotFoundException, AccessDeniedException {
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new AccessDeniedException("You do not have admin privileges.");
-        }
-
+    public void deleteUser(User user) throws UserNotFoundException {
         int id = user.getId();
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
