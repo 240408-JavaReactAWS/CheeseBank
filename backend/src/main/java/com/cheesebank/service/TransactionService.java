@@ -31,56 +31,56 @@ public class TransactionService {
         this.userRepository = userRepository;
     }
 
-    // Withdrawal, deposit, or transfer
-    @Transactional
-    public Transaction createTransaction(Transaction transaction) throws UserNotFoundException, InsufficientBalanceException, AccountFrozenException {
-        User user = transaction.getUser();
-
-        if (user.getFrozen()) {
-            throw new AccountFrozenException("Account is frozen");
-        }
-
-        if (transaction.getTransactionType() == TransactionType.WITHDRAWAL || transaction.getTransactionType() == TransactionType.TRANSFER) {
-            if (user.getBalance().compareTo(transaction.getAmount()) < 0) {
-                throw new InsufficientBalanceException("Insufficient funds");
-            }
-        }
-
-        // Transfer to another account
-        if (transaction.getTransactionType() == TransactionType.TRANSFER) {
-            User targetUser = userRepository.findById(transaction.getTargetAccount())
-                    .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-            targetUser.setBalance(targetUser.getBalance().add(transaction.getAmount()));
-            userRepository.save(targetUser);
-        }
-
-        transaction.setTimeStamp(LocalDateTime.now());
-        Transaction savedTransaction = transactionRepository.save(transaction);
-
-        user.setBalance(transaction.getTransactionType() == TransactionType.DEPOSIT
-                ? user.getBalance().add(transaction.getAmount())
-                : user.getBalance().subtract(transaction.getAmount()));
-        userRepository.save(user);
-        emailService.sendTransactionEmail(user, savedTransaction);
-        return savedTransaction;
-    }
-
-    // View transaction history
-    @Transactional(readOnly = true)
-    public Page<Transaction> getAllTransactions(User currentUser, Pageable pageable) {
-        return transactionRepository.findByUser(currentUser, pageable);
-    }
-
-    // View all transactions of a time range
-    @Transactional(readOnly = true)
-    public Page<Transaction> getTransactionsByTimeRange(User currentUser, LocalDateTime start, LocalDateTime end, Pageable pageable) {
-        return transactionRepository.findByUserAndTimeStampBetween(currentUser, start, end, pageable);
-    }
-
-    // View all transactions of a type
-    @Transactional(readOnly = true)
-    public Page<Transaction> getTransactionsByType(User currentUser, TransactionType transactionType, Pageable pageable) {
-        return transactionRepository.findByUserAndTransactionType(currentUser, transactionType, pageable);
-    }
+//    // Withdrawal, deposit, or transfer
+//    @Transactional
+//    public Transaction createTransaction(Transaction transaction) throws UserNotFoundException, InsufficientBalanceException, AccountFrozenException {
+//        User user = transaction.getUser();
+//
+//        if (user.getFrozen()) {
+//            throw new AccountFrozenException("Account is frozen");
+//        }
+//
+//        if (transaction.getTransactionType() == TransactionType.WITHDRAWAL || transaction.getTransactionType() == TransactionType.TRANSFER) {
+//            if (user.getBalance().compareTo(transaction.getAmount()) < 0) {
+//                throw new InsufficientBalanceException("Insufficient funds");
+//            }
+//        }
+//
+//        // Transfer to another account
+//        if (transaction.getTransactionType() == TransactionType.TRANSFER) {
+//            User targetUser = userRepository.findById(transaction.getTargetAccount())
+//                    .orElseThrow(() -> new UserNotFoundException("User not found"));
+//
+//            targetUser.setBalance(targetUser.getBalance().add(transaction.getAmount()));
+//            userRepository.save(targetUser);
+//        }
+//
+//        transaction.setTimeStamp(LocalDateTime.now());
+//        Transaction savedTransaction = transactionRepository.save(transaction);
+//
+//        user.setBalance(transaction.getTransactionType() == TransactionType.DEPOSIT
+//                ? user.getBalance().add(transaction.getAmount())
+//                : user.getBalance().subtract(transaction.getAmount()));
+//        userRepository.save(user);
+//        emailService.sendTransactionEmail(user, savedTransaction);
+//        return savedTransaction;
+//    }
+//
+//    // View transaction history
+//    @Transactional(readOnly = true)
+//    public Page<Transaction> getAllTransactions(User currentUser, Pageable pageable) {
+//        return transactionRepository.findByUser(currentUser, pageable);
+//    }
+//
+//    // View all transactions of a time range
+//    @Transactional(readOnly = true)
+//    public Page<Transaction> getTransactionsByTimeRange(User currentUser, LocalDateTime start, LocalDateTime end, Pageable pageable) {
+//        return transactionRepository.findByUserAndTimeStampBetween(currentUser, start, end, pageable);
+//    }
+//
+//    // View all transactions of a type
+//    @Transactional(readOnly = true)
+//    public Page<Transaction> getTransactionsByType(User currentUser, TransactionType transactionType, Pageable pageable) {
+//        return transactionRepository.findByUserAndTransactionType(currentUser, transactionType, pageable);
+//    }
 }

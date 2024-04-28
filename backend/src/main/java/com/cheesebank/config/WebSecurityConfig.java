@@ -2,10 +2,9 @@ package com.cheesebank.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -19,19 +18,30 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(HttpMethod.GET, "/api/users/login").permitAll()
-                        .requestMatchers( "/api/users/login", "/api/users/register", "/api/users/reset" ).permitAll()
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/users/login", "/api/users/register", "/api/users/reset", "/public/**").permitAll()
+                        .requestMatchers("/api/users/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin((form) -> form
-                        .loginPage("/api/users/login")
-                        .permitAll()
-                )
-                .logout(LogoutConfigurer::permitAll);
+//                .formLogin(form -> form
+//                        .loginPage("/api/users/login")
+//                        .loginProcessingUrl("/api/users/login")
+//                        .defaultSuccessUrl("/api/users/profile", true)
+//                        .failureUrl("/api/users/login?error=true")
+//                        .permitAll()
+//                )
+//                .logout(logout -> logout
+//                        .logoutUrl("/api/users/logout")
+//                        .logoutSuccessUrl("/api/users/login?logout")
+//                        .deleteCookies("JSESSIONID")
+//                        .permitAll()
+//                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                );
 
         return http.build();
     }

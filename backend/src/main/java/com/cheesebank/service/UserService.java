@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,6 +45,7 @@ public class UserService {
             throw new PhoneAlreadyTakenException("This phone number is already in use.");
         }
 
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         newUser.setBalance(BigDecimal.ZERO);
         newUser.setUserType(UserType.USER);
         newUser.setFrozen(false);
@@ -54,15 +54,14 @@ public class UserService {
 
     // Login user
     @Transactional
-    public User loginUser(User returningUser) throws InvalidCredentialsException {
-        String username = returningUser.getUsername();
+    public User loginUser(String username, String password) throws InvalidCredentialsException {
         Optional<User> possibleUser = userRepository.findByUsername(username);
         if (possibleUser.isEmpty()) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
 
-        String password = returningUser.getPassword();
         User returnedUser = possibleUser.get();
+
         if (!passwordEncoder.matches(password, returnedUser.getPassword())) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
@@ -70,143 +69,143 @@ public class UserService {
         return returnedUser;
     }
 
-    // Reset password
-    @Transactional
-    public User resetPassword(String username, String newPassword) throws UserNotFoundException {
-        Optional<User> possibleUser = userRepository.findByUsername(username);
-        if (possibleUser.isEmpty()) {
-            throw new UserNotFoundException("Invalid username");
-        }
-
-        User user = possibleUser.get();
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-        emailService.sendPasswordChangeEmail(user);
-        return user;
-    }
-
-    // View user information
-    @Transactional(readOnly = true)
-    public User getUser(User user) throws UserNotFoundException {
-        return userRepository.findById(user.getId())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-    }
-
-    // Find user by ID
-    @Transactional(readOnly = true)
-    public User findById(int id) throws UserNotFoundException {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-    }
-
-    // Find user by username
-    @Transactional(readOnly = true)
-    public Optional<User> findByUsername(String username) throws UserNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User not found");
-        }
-
-        return userRepository.findByUsername(username);
-    }
-
-    // Find user by email
-    @Transactional(readOnly = true)
-    public Optional<User> findByEmail(String email) throws UserNotFoundException {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User not found");
-        }
-
-        return userRepository.findByEmail(email);
-    }
-
-    // Find user by phone
-    @Transactional(readOnly = true)
-    public Optional<User> findByPhone(String phone) throws UserNotFoundException {
-        Optional<User> user = userRepository.findByPhone(phone);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User not found");
-        }
-
-        return userRepository.findByPhone(phone);
-    }
-
-    // View all users' information (ADMIN ONLY)
-    @Transactional(readOnly = true)
-    public List<User> getAllUsers(User user) throws AccessDeniedException {
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new AccessDeniedException("You do not have admin privileges.");
-        }
-
-        return userRepository.findAll();
-    }
-
-    // Update user information
-    @Transactional
-    public User updateUser(User updatedUser) throws UserNotFoundException, UsernameAlreadyTakenException, EmailAlreadyTakenException, PhoneAlreadyTakenException {
-        int id = updatedUser.getId();
-
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-        Optional<User> userByUsername = userRepository.findByUsername(updatedUser.getUsername());
-        if (userByUsername.isPresent() && userByUsername.get().getId() != id) {
-            throw new UsernameAlreadyTakenException("Username: " + updatedUser.getUsername() +" was already taken!");
-        }
-
-        Optional<User> userByEmail = userRepository.findByEmail(updatedUser.getEmail());
-        if (userByEmail.isPresent() && userByEmail.get().getId() != id) {
-            throw new EmailAlreadyTakenException("This email is already in use.");
-        }
-
-        Optional<User> userByPhone = userRepository.findByPhone(updatedUser.getPhone());
-        if (userByPhone.isPresent() && userByPhone.get().getId() != id) {
-            throw new PhoneAlreadyTakenException("This phone number is already in use.");
-        }
-
-        existingUser.setUsername(updatedUser.getUsername());
-        existingUser.setEmail(updatedUser.getEmail());
-        existingUser.setPhone(updatedUser.getPhone());
-        emailService.sendAccountUpdateEmail(existingUser);
-        return userRepository.save(existingUser);
-    }
-
-    // Freeze account
-    @Transactional
-    public User freezeUser(User user) throws UserNotFoundException {
-        User existingUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-        existingUser.setFrozen(!existingUser.getFrozen());
-        return userRepository.save(existingUser);
-    }
-
-    // Freeze any user account (ADMIN ONLY)
-    @Transactional
-    public User freezeAnyUser(User user, String username) throws UserNotFoundException, AccessDeniedException {
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new AccessDeniedException("You do not have admin privileges.");
-        }
-
-        User existingUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-        existingUser.setFrozen(!existingUser.getFrozen());
-        return userRepository.save(existingUser);
-    }
-
-    // Delete user account (ADMIN ONLY)
-    @Transactional
-    public void deleteUser(User user) throws UserNotFoundException, AccessDeniedException {
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new AccessDeniedException("You do not have admin privileges.");
-        }
-
-        int id = user.getId();
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-        userRepository.delete(existingUser);
-    }
+//    // Reset password
+//    @Transactional
+//    public User resetPassword(String username, String newPassword) throws UserNotFoundException {
+//        Optional<User> possibleUser = userRepository.findByUsername(username);
+//        if (possibleUser.isEmpty()) {
+//            throw new UserNotFoundException("Invalid username");
+//        }
+//
+//        User user = possibleUser.get();
+//        user.setPassword(passwordEncoder.encode(newPassword));
+//        userRepository.save(user);
+//        emailService.sendPasswordChangeEmail(user);
+//        return user;
+//    }
+//
+//    // View user information
+//    @Transactional(readOnly = true)
+//    public User getUser(User user) throws UserNotFoundException {
+//        return userRepository.findById(user.getId())
+//                .orElseThrow(() -> new UserNotFoundException("User not found"));
+//    }
+//
+//    // Find user by ID
+//    @Transactional(readOnly = true)
+//    public User findById(int id) throws UserNotFoundException {
+//        return userRepository.findById(id)
+//                .orElseThrow(() -> new UserNotFoundException("User not found"));
+//    }
+//
+//    // Find user by username
+//    @Transactional(readOnly = true)
+//    public Optional<User> findByUsername(String username) throws UserNotFoundException {
+//        Optional<User> user = userRepository.findByUsername(username);
+//        if (user.isEmpty()) {
+//            throw new UserNotFoundException("User not found");
+//        }
+//
+//        return userRepository.findByUsername(username);
+//    }
+//
+//    // Find user by email
+//    @Transactional(readOnly = true)
+//    public Optional<User> findByEmail(String email) throws UserNotFoundException {
+//        Optional<User> user = userRepository.findByEmail(email);
+//        if (user.isEmpty()) {
+//            throw new UserNotFoundException("User not found");
+//        }
+//
+//        return userRepository.findByEmail(email);
+//    }
+//
+//    // Find user by phone
+//    @Transactional(readOnly = true)
+//    public Optional<User> findByPhone(String phone) throws UserNotFoundException {
+//        Optional<User> user = userRepository.findByPhone(phone);
+//        if (user.isEmpty()) {
+//            throw new UserNotFoundException("User not found");
+//        }
+//
+//        return userRepository.findByPhone(phone);
+//    }
+//
+//    // View all users' information (ADMIN ONLY)
+//    @Transactional(readOnly = true)
+//    public List<User> getAllUsers(User user) throws AccessDeniedException {
+//        if (user.getUserType() != UserType.ADMIN) {
+//            throw new AccessDeniedException("You do not have admin privileges.");
+//        }
+//
+//        return userRepository.findAll();
+//    }
+//
+//    // Update user information
+//    @Transactional
+//    public User updateUser(User updatedUser) throws UserNotFoundException, UsernameAlreadyTakenException, EmailAlreadyTakenException, PhoneAlreadyTakenException {
+//        int id = updatedUser.getId();
+//
+//        User existingUser = userRepository.findById(id)
+//                .orElseThrow(() -> new UserNotFoundException("User not found"));
+//
+//        Optional<User> userByUsername = userRepository.findByUsername(updatedUser.getUsername());
+//        if (userByUsername.isPresent() && userByUsername.get().getId() != id) {
+//            throw new UsernameAlreadyTakenException("Username: " + updatedUser.getUsername() +" was already taken!");
+//        }
+//
+//        Optional<User> userByEmail = userRepository.findByEmail(updatedUser.getEmail());
+//        if (userByEmail.isPresent() && userByEmail.get().getId() != id) {
+//            throw new EmailAlreadyTakenException("This email is already in use.");
+//        }
+//
+//        Optional<User> userByPhone = userRepository.findByPhone(updatedUser.getPhone());
+//        if (userByPhone.isPresent() && userByPhone.get().getId() != id) {
+//            throw new PhoneAlreadyTakenException("This phone number is already in use.");
+//        }
+//
+//        existingUser.setUsername(updatedUser.getUsername());
+//        existingUser.setEmail(updatedUser.getEmail());
+//        existingUser.setPhone(updatedUser.getPhone());
+//        emailService.sendAccountUpdateEmail(existingUser);
+//        return userRepository.save(existingUser);
+//    }
+//
+//    // Freeze account
+//    @Transactional
+//    public User freezeUser(User user) throws UserNotFoundException {
+//        User existingUser = userRepository.findById(user.getId())
+//                .orElseThrow(() -> new UserNotFoundException("User not found"));
+//
+//        existingUser.setFrozen(!existingUser.getFrozen());
+//        return userRepository.save(existingUser);
+//    }
+//
+//    // Freeze any user account (ADMIN ONLY)
+//    @Transactional
+//    public User freezeAnyUser(User user, String username) throws UserNotFoundException, AccessDeniedException {
+//        if (user.getUserType() != UserType.ADMIN) {
+//            throw new AccessDeniedException("You do not have admin privileges.");
+//        }
+//
+//        User existingUser = userRepository.findByUsername(username)
+//                .orElseThrow(() -> new UserNotFoundException("User not found"));
+//
+//        existingUser.setFrozen(!existingUser.getFrozen());
+//        return userRepository.save(existingUser);
+//    }
+//
+//    // Delete user account (ADMIN ONLY)
+//    @Transactional
+//    public void deleteUser(User user) throws UserNotFoundException, AccessDeniedException {
+//        if (user.getUserType() != UserType.ADMIN) {
+//            throw new AccessDeniedException("You do not have admin privileges.");
+//        }
+//
+//        int id = user.getId();
+//        User existingUser = userRepository.findById(id)
+//                .orElseThrow(() -> new UserNotFoundException("User not found"));
+//
+//        userRepository.delete(existingUser);
+//    }
 }

@@ -5,6 +5,7 @@ import com.cheesebank.model.User;
 import com.cheesebank.model.UserType;
 import com.cheesebank.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,10 +42,15 @@ public class UserController {
     // Login user
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestBody User user, HttpSession session) throws InvalidCredentialsException {
-        User loggedInUser = userService.loginUser(user);
+        User loggedInUser = userService.loginUser(user.getUsername(), user.getPassword());
         session.setAttribute("user", loggedInUser);
         System.out.println("User login successful");
         return ResponseEntity.ok(loggedInUser);
+    }
+
+    @GetMapping("/login")
+    public String loginPage(@RequestBody User user, HttpSession session) {
+        return "Redirecting to login page";
     }
 
     // Validate user session
@@ -71,136 +77,136 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    // Logout user
-    @PostMapping("/logout")
-    public ResponseEntity<String> logoutUser(HttpSession session) {
-        session.removeAttribute("user");
-        session.invalidate();
-        System.out.println("User logout successful");
-        return ResponseEntity.ok("User logout successful");
-    }
-
-    // Reset password
-    @PatchMapping("/reset")
-    public ResponseEntity<User> resetPassword(@RequestBody User user, HttpSession session) throws UserNotFoundException {
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null || !sessionUser.getUsername().equals(user.getUsername())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        User updatedUser = userService.resetPassword(user.getUsername(), user.getPassword());
-        System.out.println("Password reset");
-        return ResponseEntity.ok(updatedUser);
-    }
-
-    // View user information
-    @GetMapping("/profile")
-    public ResponseEntity<User> getUser(HttpSession session) throws UserNotFoundException {
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        User user = userService.getUser(sessionUser);
-        System.out.println("Profile information retrieved");
-        return ResponseEntity.ok(user);
-    }
-
-    // Find user by username
-    @GetMapping("/username/{username}")
-    public ResponseEntity<Optional<User>> findByUsername(@PathVariable String username, HttpSession session) throws UserNotFoundException {
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null || !sessionUser.getUsername().equals(username)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        Optional<User> user = userService.findByUsername(username);
-        System.out.println("User found by username");
-        return ResponseEntity.ok(user);
-    }
-
-    // Find user by email
-    @GetMapping("/email/{email}")
-    public ResponseEntity<Optional<User>> findByEmail(@PathVariable String email, HttpSession session) throws UserNotFoundException {
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null || !sessionUser.getEmail().equals(email)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        Optional<User> user = userService.findByEmail(email);
-        System.out.println("User found by email");
-        return ResponseEntity.ok(user);
-    }
-
-    // Find user by phone
-    @GetMapping("/phone/{phone}")
-    public ResponseEntity<Optional<User>> findByPhone(@PathVariable String phone, HttpSession session) throws UserNotFoundException {
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null || !sessionUser.getPhone().equals(phone)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        Optional<User> user = userService.findByPhone(phone);
-        System.out.println("User found by phone");
-        return ResponseEntity.ok(user);
-    }
-
-    // View all users' information (ADMIN ONLY)
-    @GetMapping("/all")
-    public ResponseEntity<List<User>> findAllUsers(HttpSession session) throws AccessDeniedException {
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null || sessionUser.getUserType() != UserType.ADMIN) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        List<User> users = userService.getAllUsers(sessionUser);
-        System.out.println("All users found");
-        return ResponseEntity.ok(users);
-    }
-
-    // Update user information
-    @PatchMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User user, HttpSession session) throws UserNotFoundException, PhoneAlreadyTakenException, EmailAlreadyTakenException, UsernameAlreadyTakenException {
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null || !sessionUser.getUsername().equals(user.getUsername())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        User updatedUser = userService.updateUser(user);
-        System.out.println("User updated");
-        return ResponseEntity.ok(updatedUser);
-    }
-
-    // Freeze account
-    @PatchMapping("/freeze")
-    public ResponseEntity<User> freezeUser(@RequestBody User user, HttpSession session) throws UserNotFoundException {
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null || !sessionUser.getUsername().equals(user.getUsername())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        User frozenUser = userService.freezeUser(user);
-        System.out.println("Account frozen");
-        return ResponseEntity.ok(frozenUser);
-    }
-
-    // Freeze any account (ADMIN ONLY)
-    @PatchMapping("/freeze/{username}")
-    public ResponseEntity<User> freezeAnyUser(@PathVariable String username, HttpSession session) throws UserNotFoundException, AccessDeniedException {
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null || sessionUser.getUserType() != UserType.ADMIN) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        User frozenUser = userService.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        userService.freezeUser(frozenUser);
-        System.out.println("Account frozen");
-        return ResponseEntity.ok(frozenUser);
-    }
-
-    // Delete user account (ADMIN ONLY)
-    @DeleteMapping("/delete/{username}")
-    public ResponseEntity<String> deleteUser(@PathVariable String username, HttpSession session) throws UserNotFoundException, AccessDeniedException {
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null || sessionUser.getUserType() != UserType.ADMIN) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        User deletedUser = userService.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        userService.deleteUser(deletedUser);
-        System.out.println("User deleted");
-        return ResponseEntity.ok("User deleted");
-    }
+//    // Logout user
+//    @PostMapping("/logout")
+//    public ResponseEntity<String> logoutUser(HttpSession session) {
+//        session.removeAttribute("user");
+//        session.invalidate();
+//        System.out.println("User logout successful");
+//        return ResponseEntity.ok("User logout successful");
+//    }
+//
+//    // Reset password
+//    @PatchMapping("/reset")
+//    public ResponseEntity<User> resetPassword(@RequestBody User user, HttpSession session) throws UserNotFoundException {
+//        User sessionUser = (User) session.getAttribute("user");
+//        if (sessionUser == null || !sessionUser.getUsername().equals(user.getUsername())) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        User updatedUser = userService.resetPassword(user.getUsername(), user.getPassword());
+//        System.out.println("Password reset");
+//        return ResponseEntity.ok(updatedUser);
+//    }
+//
+//    // View user information
+//    @GetMapping("/profile")
+//    public ResponseEntity<User> getUser(HttpSession session) throws UserNotFoundException {
+//        User sessionUser = (User) session.getAttribute("user");
+//        if (sessionUser == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        User user = userService.getUser(sessionUser);
+//        System.out.println("Profile information retrieved");
+//        return ResponseEntity.ok(user);
+//    }
+//
+//    // Find user by username
+//    @GetMapping("/username/{username}")
+//    public ResponseEntity<Optional<User>> findByUsername(@PathVariable String username, HttpSession session) throws UserNotFoundException {
+//        User sessionUser = (User) session.getAttribute("user");
+//        if (sessionUser == null || !sessionUser.getUsername().equals(username)) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        Optional<User> user = userService.findByUsername(username);
+//        System.out.println("User found by username");
+//        return ResponseEntity.ok(user);
+//    }
+//
+//    // Find user by email
+//    @GetMapping("/email/{email}")
+//    public ResponseEntity<Optional<User>> findByEmail(@PathVariable String email, HttpSession session) throws UserNotFoundException {
+//        User sessionUser = (User) session.getAttribute("user");
+//        if (sessionUser == null || !sessionUser.getEmail().equals(email)) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        Optional<User> user = userService.findByEmail(email);
+//        System.out.println("User found by email");
+//        return ResponseEntity.ok(user);
+//    }
+//
+//    // Find user by phone
+//    @GetMapping("/phone/{phone}")
+//    public ResponseEntity<Optional<User>> findByPhone(@PathVariable String phone, HttpSession session) throws UserNotFoundException {
+//        User sessionUser = (User) session.getAttribute("user");
+//        if (sessionUser == null || !sessionUser.getPhone().equals(phone)) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        Optional<User> user = userService.findByPhone(phone);
+//        System.out.println("User found by phone");
+//        return ResponseEntity.ok(user);
+//    }
+//
+//    // View all users' information (ADMIN ONLY)
+//    @GetMapping("/all")
+//    public ResponseEntity<List<User>> findAllUsers(HttpSession session) throws AccessDeniedException {
+//        User sessionUser = (User) session.getAttribute("user");
+//        if (sessionUser == null || sessionUser.getUserType() != UserType.ADMIN) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        List<User> users = userService.getAllUsers(sessionUser);
+//        System.out.println("All users found");
+//        return ResponseEntity.ok(users);
+//    }
+//
+//    // Update user information
+//    @PatchMapping("/update")
+//    public ResponseEntity<User> updateUser(@RequestBody User user, HttpSession session) throws UserNotFoundException, PhoneAlreadyTakenException, EmailAlreadyTakenException, UsernameAlreadyTakenException {
+//        User sessionUser = (User) session.getAttribute("user");
+//        if (sessionUser == null || !sessionUser.getUsername().equals(user.getUsername())) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        User updatedUser = userService.updateUser(user);
+//        System.out.println("User updated");
+//        return ResponseEntity.ok(updatedUser);
+//    }
+//
+//    // Freeze account
+//    @PatchMapping("/freeze")
+//    public ResponseEntity<User> freezeUser(@RequestBody User user, HttpSession session) throws UserNotFoundException {
+//        User sessionUser = (User) session.getAttribute("user");
+//        if (sessionUser == null || !sessionUser.getUsername().equals(user.getUsername())) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        User frozenUser = userService.freezeUser(user);
+//        System.out.println("Account frozen");
+//        return ResponseEntity.ok(frozenUser);
+//    }
+//
+//    // Freeze any account (ADMIN ONLY)
+//    @PatchMapping("/freeze/{username}")
+//    public ResponseEntity<User> freezeAnyUser(@PathVariable String username, HttpSession session) throws UserNotFoundException, AccessDeniedException {
+//        User sessionUser = (User) session.getAttribute("user");
+//        if (sessionUser == null || sessionUser.getUserType() != UserType.ADMIN) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        User frozenUser = userService.findByUsername(username)
+//                .orElseThrow(() -> new UserNotFoundException("User not found"));
+//        userService.freezeUser(frozenUser);
+//        System.out.println("Account frozen");
+//        return ResponseEntity.ok(frozenUser);
+//    }
+//
+//    // Delete user account (ADMIN ONLY)
+//    @DeleteMapping("/delete/{username}")
+//    public ResponseEntity<String> deleteUser(@PathVariable String username, HttpSession session) throws UserNotFoundException, AccessDeniedException {
+//        User sessionUser = (User) session.getAttribute("user");
+//        if (sessionUser == null || sessionUser.getUserType() != UserType.ADMIN) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        User deletedUser = userService.findByUsername(username)
+//                .orElseThrow(() -> new UserNotFoundException("User not found"));
+//        userService.deleteUser(deletedUser);
+//        System.out.println("User deleted");
+//        return ResponseEntity.ok("User deleted");
+//    }
 }
