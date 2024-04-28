@@ -120,7 +120,7 @@ public class UserController {
     @GetMapping("/username/{username}")
     public ResponseEntity<Optional<User>> findByUsername(@PathVariable String username, HttpSession session) throws UserNotFoundException {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null || !sessionUser.getUsername().equals(username)) {
+        if (sessionUser == null || (!sessionUser.getUsername().equals(username) && sessionUser.getUserType() != UserType.ADMIN)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         Optional<User> user = userService.findByUsername(username);
@@ -132,7 +132,7 @@ public class UserController {
     @GetMapping("/email/{email}")
     public ResponseEntity<Optional<User>> findByEmail(@PathVariable String email, HttpSession session) throws UserNotFoundException {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null || !sessionUser.getEmail().equals(email)) {
+        if (sessionUser == null || (!sessionUser.getEmail().equals(email) && sessionUser.getUserType() != UserType.ADMIN)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         Optional<User> user = userService.findByEmail(email);
@@ -144,7 +144,7 @@ public class UserController {
     @GetMapping("/phone/{phone}")
     public ResponseEntity<Optional<User>> findByPhone(@PathVariable String phone, HttpSession session) throws UserNotFoundException {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null || !sessionUser.getPhone().equals(phone)) {
+        if (sessionUser == null || (!sessionUser.getPhone().equals(phone) && sessionUser.getUserType() != UserType.ADMIN)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         Optional<User> user = userService.findByPhone(phone);
