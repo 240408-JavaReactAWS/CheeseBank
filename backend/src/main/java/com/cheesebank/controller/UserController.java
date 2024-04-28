@@ -3,8 +3,6 @@ package com.cheesebank.controller;
 import com.cheesebank.exception.*;
 import com.cheesebank.model.User;
 import com.cheesebank.model.UserType;
-import com.cheesebank.service.EmailService;
-import com.cheesebank.service.TransactionService;
 import com.cheesebank.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/v2/users")
+@RequestMapping("/api/users")
 @CrossOrigin(
         origins = "${frontend.url}",
         methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE},

@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +46,7 @@ public class UserService {
             throw new PhoneAlreadyTakenException("This phone number is already in use.");
         }
 
+        newUser.setBalance(BigDecimal.ZERO);
         newUser.setUserType(UserType.USER);
         newUser.setFrozen(false);
         return userRepository.save(newUser);
