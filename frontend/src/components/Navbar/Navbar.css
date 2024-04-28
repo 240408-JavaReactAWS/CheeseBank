@@ -1,0 +1,22 @@
+.navbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: #FF8B00;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 16px;
+    display: inline-block;
+}
+
+.navbar a:hover {
+    background-color: #FF8B00;
+    color: black;
+}
