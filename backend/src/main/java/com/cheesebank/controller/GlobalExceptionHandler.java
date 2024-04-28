@@ -55,4 +55,5 @@ public class GlobalExceptionHandler {
         System.out.println("Access denied");
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
+
 }

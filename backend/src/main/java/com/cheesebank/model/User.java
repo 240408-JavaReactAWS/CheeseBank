@@ -164,6 +164,7 @@ public class User {
     public int hashCode() {
         return Objects.hash(id, username, password, lastName, email, dob, phone, balance, userType, isFrozen);
     }
+
     @Override
     public String toString() {
         return "User{" +
@@ -180,4 +181,5 @@ public class User {
                 ", isFrozen=" + isFrozen +
                 '}';
     }
+
 }

@@ -44,4 +44,5 @@ public class EmailService {
         String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nYour password has been changed.";
         sendEmail(user.getEmail(), subject, text);
     }
+
 }

@@ -226,4 +226,5 @@ public class UserController {
         System.out.println("User deleted");
         return ResponseEntity.ok("User deleted");
     }
+
 }
