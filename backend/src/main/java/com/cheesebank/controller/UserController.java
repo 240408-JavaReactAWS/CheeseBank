@@ -42,6 +42,12 @@ public class UserController {
     // Login user
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestBody User user, HttpSession session) throws InvalidCredentialsException {
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser != null) {
+            System.out.println("Already logged in to an account");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
+
         User loggedInUser = userService.loginUser(user.getUsername(), user.getPassword());
         session.setAttribute("user", loggedInUser);
         System.out.println("User login successful");
