@@ -3,16 +3,13 @@ package com.cheesebank.controller;
 import com.cheesebank.exception.*;
 import com.cheesebank.model.User;
 import com.cheesebank.model.UserType;
+import com.cheesebank.service.EmailService;
 import com.cheesebank.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -25,9 +22,12 @@ public class UserController {
 
     private final UserService userService;
 
+    private final EmailService emailService;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, EmailService emailService) {
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     // Register new user
@@ -83,27 +83,24 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-//    // Logout user
-//    @PostMapping("/logout")
-//    public ResponseEntity<String> logoutUser(HttpSession session) {
-//        session.removeAttribute("user");
-//        session.invalidate();
-//        System.out.println("User logout successful");
-//        return ResponseEntity.ok("User logout successful");
-//    }
-//
-//    // Reset password
-//    @PatchMapping("/reset")
-//    public ResponseEntity<User> resetPassword(@RequestBody User user, HttpSession session) throws UserNotFoundException {
-//        User sessionUser = (User) session.getAttribute("user");
-//        if (sessionUser == null || !sessionUser.getUsername().equals(user.getUsername())) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//        User updatedUser = userService.resetPassword(user.getUsername(), user.getPassword());
-//        System.out.println("Password reset");
-//        return ResponseEntity.ok(updatedUser);
-//    }
-//
+    // Logout user
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutUser(HttpSession session) {
+        session.removeAttribute("user");
+        session.invalidate();
+        System.out.println("User logout successful");
+        return ResponseEntity.ok("User logout successful");
+    }
+
+    // Reset password
+    @PatchMapping("/reset")
+    public ResponseEntity<User> resetPassword(@RequestBody User user) throws UserNotFoundException, InvalidCredentialsException {
+        userService.resetPassword(user);
+        emailService.sendPasswordChangeEmail(user);
+        System.out.println("Password reset");
+        return ResponseEntity.ok(user);
+    }
+
 //    // View user information
 //    @GetMapping("/profile")
 //    public ResponseEntity<User> getUser(HttpSession session) throws UserNotFoundException {
