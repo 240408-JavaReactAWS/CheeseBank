@@ -199,7 +199,7 @@ public class UserController {
 
     // Freeze any account (ADMIN ONLY)
     @PatchMapping("/freeze/{username}")
-    public ResponseEntity<User> freezeAnyUser(@PathVariable String username, HttpSession session) throws UserNotFoundException, AccessDeniedException {
+    public ResponseEntity<User> freezeAnyUser(@PathVariable String username, HttpSession session) throws UserNotFoundException {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null || sessionUser.getUserType() != UserType.ADMIN) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -214,7 +214,7 @@ public class UserController {
 
     // Delete user account (ADMIN ONLY)
     @DeleteMapping("/delete/{username}")
-    public ResponseEntity<String> deleteUser(@PathVariable String username, HttpSession session) throws UserNotFoundException, AccessDeniedException {
+    public ResponseEntity<String> deleteUser(@PathVariable String username, HttpSession session) throws UserNotFoundException {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null || sessionUser.getUserType() != UserType.ADMIN) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

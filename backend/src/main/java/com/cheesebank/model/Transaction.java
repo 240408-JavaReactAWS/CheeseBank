@@ -22,7 +22,7 @@ public class Transaction {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
-    @Column(nullable = true)
+    @Column
     private String description;
 
     @Column(nullable = false)
@@ -49,9 +49,7 @@ public class Transaction {
         this.user = user;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
     public void setId(Long id) {
         this.id = id;

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class TransactionService {
@@ -24,10 +23,8 @@ public class TransactionService {
 
     private final UserRepository userRepository;
 
-    private EmailService emailService;
-
     @Autowired
-    public TransactionService(TransactionRepository transactionRepository, UserRepository userRepository) {
+    public TransactionService(TransactionRepository transactionRepository, UserRepository userRepository, EmailService emailService) {
         this.transactionRepository = transactionRepository;
         this.userRepository = userRepository;
     }
@@ -37,7 +34,11 @@ public class TransactionService {
     public void createTransaction(Transaction transaction) throws UserNotFoundException, InsufficientBalanceException, AccountFrozenException {
         int userId = transaction.getUser().getId();
 
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        if (user.getFrozen()) {
+            throw new AccountFrozenException("Account is frozen");
+        }
         if (transaction.getTransactionType() == TransactionType.WITHDRAWAL) {
             if (user.getBalance().compareTo(transaction.getAmount()) < 0) {
                 throw new InsufficientBalanceException("Insufficient balance");
@@ -55,6 +56,7 @@ public class TransactionService {
         }
 
         transaction.setUser(user);
+//        emailService.sendTransactionEmail(user, transaction);
         transactionRepository.save(transaction);
     }
 

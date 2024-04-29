@@ -23,23 +23,9 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/**").permitAll()
-//                        .requestMatchers("/api/users/login", "/api/users/register", "/api/users/reset", "/public/**").permitAll()
                         .requestMatchers("/api/users/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
-//                .formLogin(form -> form
-//                        .loginPage("/api/users/login")
-//                        .loginProcessingUrl("/api/users/login")
-//                        .defaultSuccessUrl("/api/users/profile", true)
-//                        .failureUrl("/api/users/login?error=true")
-//                        .permitAll()
-//                )
-//                .logout(logout -> logout
-//                        .logoutUrl("/api/users/logout")
-//                        .logoutSuccessUrl("/api/users/login?logout")
-//                        .deleteCookies("JSESSIONID")
-//                        .permitAll()
-//                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 );
