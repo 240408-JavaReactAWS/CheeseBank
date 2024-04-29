@@ -4,15 +4,19 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 20px;
+    margin: 50px 50px;
+    padding: 50px 50px;
+    background: linear-gradient(to bottom right, #e1e0e0, #fcfcfc);
 }
 
-button {
+
+.transaction-btn button {
     padding: 10px 20px;
-    margin: 10px;
+    margin: 10px 5px;
     font-size: 16px;
     cursor: pointer;
     border-radius: 5px;
+    display: inline-flex;
 }
 
 .depositTransaction {
@@ -74,28 +78,37 @@ input {
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    display: block;
-    margin-left: 20px;
+    display: flex;
     width: 300px;
 
 }
 
+.depositBtn,
+.withdrawBtn,
+.transferBtn {
+    border: rgb(176, 176, 175) 1px solid;
+    border-radius: 5px;
+    height: 30px;
+    color: rgb(5, 5, 5);
+    padding: 5px;
+    margin: 5px;
+}
+
 .depositBtn {
     background-color: #4CAF50;
-    color: white;
-    border: none;
+
 }
 
 .withdrawBtn {
     background-color: #f44336;
-    color: white;
-    border: none;
+
+
 }
 
 .transferBtn {
     background-color: #008CBA;
-    color: white;
-    border: none;
+
+
 }
 
 .depositBtn:hover,

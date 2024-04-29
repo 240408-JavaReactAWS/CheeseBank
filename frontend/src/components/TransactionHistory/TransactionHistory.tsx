@@ -14,7 +14,6 @@ function TransactionHistory(props: TransactionHistoryProps) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [user, setUser] = useState<User>();
-    const [searchValue, setSearchValue] = useState("");
     const [searchText, setSearchText] = useState('');
     const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
 
@@ -90,13 +89,13 @@ function TransactionHistory(props: TransactionHistoryProps) {
     return (
         <div className='transaction-history'>
             <h2>Transaction History</h2> 
- <input
+        <input className='search-bar'
         type="text"
         value={searchText}
         onChange={handleSearchInputChange}
         placeholder="Search..."
-      />
-            <h4>Name: <span>{user?.first_name} {user?.last_name}</span> </h4>
+        />
+        <h4>Name: <span>{user?.first_name} {user?.last_name}</span> </h4>
       
             {loading && <p>Loading...</p>}
             {error && <p>Error fetching data</p>}
@@ -130,7 +129,7 @@ function TransactionHistory(props: TransactionHistoryProps) {
                 </tbody>
             </table>
 
-                     <button className='download-btn' onClick={downloadCSV}>Download CSV</button>
+                <button className='download-btn' onClick={downloadCSV}>Download CSV</button>
 
         </div>
         

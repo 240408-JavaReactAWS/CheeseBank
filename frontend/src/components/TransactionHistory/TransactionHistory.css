@@ -6,13 +6,21 @@ h1 {
 .transaction-history {
     margin: 20px;
     padding: 20px;
-    border: 1px solid black;
     border-radius: 5px;
     position: relative;
+    background: linear-gradient(to bottom right, #f3f3f3, #dadada);
 }
 
 .description {
     width: 350px;
+}
+
+.search-bar {
+    margin: 1px;
+    padding: 10px;
+
+    border-radius: 5px;
+
 }
 
 th,
@@ -20,7 +28,6 @@ td {
     text-align: center;
     font-size: 14px;
     padding: 10px;
-    border: 1px solid black;
     align-items: center;
     align-content: center;
 }
@@ -30,7 +37,7 @@ tbody tr:nth-child(odd) {
 }
 
 tbody tr:nth-child(even) {
-    background-color: #ace2f2;
+    background-color: #c6ced1;
 }
 
 .download-btn {
@@ -38,4 +45,5 @@ tbody tr:nth-child(even) {
     font-size: 10px;
     cursor: pointer;
     border-radius: 5px;
+    background-color: #737879;
 }
