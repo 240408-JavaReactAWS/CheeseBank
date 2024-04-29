@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -95,14 +97,37 @@ public class UserController {
         return ResponseEntity.ok("User logout successful");
     }
 
-    // Reset password
-    @PatchMapping("/reset")
-    public ResponseEntity<User> resetPassword(@RequestBody User user) throws UserNotFoundException, InvalidCredentialsException {
-        userService.resetPassword(user);
-//        emailService.sendPasswordChangeEmail(user);
-        System.out.println("Password reset");
-        return ResponseEntity.ok(user);
+    // Trigger password reset
+    @PostMapping("/forgot-password")
+    public ResponseEntity<User> forgotPassword(@RequestParam String email) throws UserNotFoundException, PhoneAlreadyTakenException, EmailAlreadyTakenException, UsernameAlreadyTakenException {
+
+        Optional<User> user = userService.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User not found");
+        }
+        User possibleUser = user.get();
+        String token = UUID.randomUUID().toString();
+        possibleUser.setToken(token);
+        userService.updateUser(possibleUser);
+        emailService.sendEmail(email, "Password Reset", "Dear " + possibleUser.getFirstName() + "," + "\n\nPlease click the link to reset your password: http://localhost:3000/reset-password?token=" + token + "\n\nCheese Bank");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    // Reset password
+    @PostMapping("/reset-password")
+    public void resetPassword(@RequestBody Map<String, String> request) throws UserNotFoundException {
+        String token = request.get("token");
+        String password = request.get("password");
+        userService.resetPassword(token, password);
+    }
+//    // Reset password
+//    @PatchMapping("/reset")
+//    public ResponseEntity<User> resetPassword(@RequestBody User user) throws UserNotFoundException, InvalidCredentialsException {
+//        userService.resetPassword(user);
+////        emailService.sendPasswordChangeEmail(user);
+//        System.out.println("Password reset");
+//        return ResponseEntity.ok(user);
+//    }
 
     // View user information
     @GetMapping("/profile")

@@ -74,22 +74,36 @@ public class UserService {
 
     // Reset password
     @Transactional
-    public void resetPassword(User user) throws UserNotFoundException, InvalidCredentialsException {
-        String username = user.getUsername();
-        String phone = user.getPhone();
-        String email = user.getEmail();
-        LocalDate dob = user.getDob();
-        String newPassword = user.getPassword();
-
-        User updatedUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        if (!updatedUser.getEmail().equals(email) || !updatedUser.getPhone().equals(phone) || !updatedUser.getDob().equals(dob)) {
-            throw new InvalidCredentialsException("Invalid email, phone, or date of birth");
+    public void resetPassword(String token, String password) throws UserNotFoundException {
+        Optional<User> user = userRepository.findByToken(token);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User not found");
         }
 
-        updatedUser.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(updatedUser);
+        User possibleUser = user.get();
+
+        possibleUser.setPassword(passwordEncoder.encode(password));
+        possibleUser.setToken(null);
+        userRepository.save(possibleUser);
+        emailService.sendEmail(possibleUser.getEmail(), "Password Reset", " Dear "+ possibleUser.getFirstName() +"\n\n" + "Your password has been reset \n\nIf you did not initiate this action, please contact Cheese Bank immediately." + "\n\nCheese Bank");
     }
+//    @Transactional
+//    public void resetPassword(User user) throws UserNotFoundException, InvalidCredentialsException {
+//        String username = user.getUsername();
+//        String phone = user.getPhone();
+//        String email = user.getEmail();
+//        LocalDate dob = user.getDob();
+//        String newPassword = user.getPassword();
+//
+//        User updatedUser = userRepository.findByUsername(username)
+//                .orElseThrow(() -> new UserNotFoundException("User not found"));
+//        if (!updatedUser.getEmail().equals(email) || !updatedUser.getPhone().equals(phone) || !updatedUser.getDob().equals(dob)) {
+//            throw new InvalidCredentialsException("Invalid email, phone, or date of birth");
+//        }
+//
+//        updatedUser.setPassword(passwordEncoder.encode(newPassword));
+//        userRepository.save(updatedUser);
+//    }
 
     // View user information
     @Transactional(readOnly = true)

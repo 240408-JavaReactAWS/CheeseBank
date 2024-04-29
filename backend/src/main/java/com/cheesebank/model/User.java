@@ -45,6 +45,9 @@ public class User {
     @Column(nullable = false)
     private Boolean isFrozen;
 
+    @Column
+    private String token;
+
     public User() {
     }
 
@@ -60,6 +63,7 @@ public class User {
         this.balance = balance;
         this.userType = userType;
         this.isFrozen = isFrozen;
+        this.token = null;
     }
 
     public int getId() {
@@ -150,6 +154,10 @@ public class User {
         isFrozen = frozen;
     }
 
+    public String getToken() { return token; }
+
+    public void setToken(String token) { this.token = token; }
+
     // Helper Methods
 
     @Override
@@ -157,12 +165,12 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && username.equals(user.username) && password.equals(user.password) && firstName.equals(user.firstName) && lastName.equals(user.lastName) && email.equals(user.email) && dob.equals(user.dob) && phone.equals(user.phone) && balance.equals(user.balance) && userType == user.userType && isFrozen.equals(user.isFrozen);
+        return id == user.id && username.equals(user.username) && password.equals(user.password) && firstName.equals(user.firstName) && lastName.equals(user.lastName) && email.equals(user.email) && dob.equals(user.dob) && phone.equals(user.phone) && balance.equals(user.balance) && userType == user.userType && isFrozen.equals(user.isFrozen) && token.equals(user.token);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, lastName, email, dob, phone, balance, userType, isFrozen);
+        return Objects.hash(id, username, password, lastName, email, dob, phone, balance, userType, isFrozen, token);
     }
 
     @Override
@@ -179,6 +187,7 @@ public class User {
                 ", balance=" + balance +
                 ", userType=" + userType +
                 ", isFrozen=" + isFrozen +
+                ", token=" + token +
                 '}';
     }
 
