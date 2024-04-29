@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/transactions")
@@ -118,32 +119,27 @@ public class TransactionController {
     }
 
     // View transaction history of any user (ADMIN ONLY)
-    @GetMapping("/history/{userId}")
-    public ResponseEntity<Page<Transaction>> viewTransactionHistory(@PathVariable int userId, HttpSession session, Pageable pageable) throws UserNotFoundException {
+    @GetMapping("/history/{username}")
+    public ResponseEntity<Page<Transaction>> viewTransactionHistory(@PathVariable String username, HttpSession session, Pageable pageable) throws UserNotFoundException {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null || sessionUser.getUserType() != UserType.ADMIN) {
             System.out.println("Unauthorized access");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        User user = userService.findById(userId);
-        if (user == null) {
+        Optional<User> user = userService.findByUsername(username);
+        if (user.isEmpty()) {
             System.out.println("User not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        Page<Transaction> transactionHistory = transactionService.getAllTransactions(user, pageable);
-        if (transactionHistory.isEmpty()) {
-            System.out.println("No transactions found");
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-
-        System.out.println("Successfully retrieved past transactions");
-        return ResponseEntity.ok(transactionHistory);
+        User searchedUser = user.get();
+        System.out.println("Successfully retrieved " + searchedUser.getFirstName() + " " + searchedUser.getLastName() + "'s past transactions");
+        return ResponseEntity.ok(transactionService.getAllTransactions(searchedUser, pageable));
     }
 
     // View all transactions of a time range
-    @GetMapping("/history/{startDate}/{endDate}")
+    @GetMapping("/history/range/{startDate}/{endDate}")
     public ResponseEntity<Page<Transaction>> viewTransactionHistory(@RequestBody LocalDateTime startDate, @RequestBody LocalDateTime endDate, HttpSession session, Pageable pageable) {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
@@ -162,7 +158,7 @@ public class TransactionController {
     }
 
     // View all transactions of a type
-    @GetMapping("/history/{transactionType}")
+    @GetMapping("/history/type/{transactionType}")
     public ResponseEntity<Page<Transaction>> viewTransactionHistory(@PathVariable TransactionType transactionType, HttpSession session, Pageable pageable) {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
