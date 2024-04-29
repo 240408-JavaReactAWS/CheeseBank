@@ -1,20 +1,21 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <Router>
-        <Routes>
-          {/* <Route path = "/" component = {}></Route>
-          <Route path = "/login" component = {}></Route>
-          <Route path = "/register" component = {}></Route>
-          <Route path = "/reset" component = {}></Route>
-          <Route path = "/dashboard" component = {}></Route>
-          <Route path = "/history" component = {}></Route>
-          <Route path = "/admin" component = {}></Route> */}
-        </Routes>
-      </Router>
+      <div>
+        test
+      </div>
+      <Routes>
+        {/* <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/reset" element={<ResetPassword />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/history" element={<History />} />
+        <Route path="/admin" element={<Admin />} /> */}
+      </Routes>
     </div>
   );
 }
