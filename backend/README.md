@@ -17,15 +17,37 @@ The CheeseBank API provides a set of endpoints for managing user accounts, fund 
 - Spring Data JPA
 - PostgreSQL
 - Maven
+- Postman (for testing)
+- DBeaver (for testing)
 
 ## Installation
-1. Clone the repository: `git clone https://github.com/240408-JavaReactAWS/CheeseBank.git`
-2. Navigate to the project directory: `cd CheeseBank/backend`
-3. Configure the environment variables: `src/main/resources/application.properties`
-   - PostgreSQL
-   - Email service
-   - Frontend URL
-4. Build and run the project: `mvn spring-boot:run`
+1. Clone the repository
+   ```sh
+   git clone https://github.com/240408-JavaReactAWS/CheeseBank.git
+   ```
+2. Navigate to the project directory
+   ```sh
+   cd CheeseBank/backend
+   ```
+3. Install the dependencies
+   ```sh
+   mvn clean install
+   ``` 
+4. Configure the credentials and environment variables laid out in `example.application.properties`
+  - PostgreSQL
+  - Email service
+  - Frontend URL
+      ```sh
+      src/main/resources/application.properties
+      ```
+5. Build and run the project 
+   ```sh
+   mvn spring-boot:run
+   ```
+6. Access the API
+    ```sh
+    http://localhost:8080
+    ```
 
 ## User Stories
 ### User
@@ -52,4 +74,4 @@ The CheeseBank API provides a set of endpoints for managing user accounts, fund 
 
 ## Issues
 - Users can't have multiple bank accounts. A new table to separate user data with account data would be needed.
-- Users don't have account numbers which could lead to issues with account security.
+- User account numbers are equal to their primary keys. This is not secure and should be replaced with a unique account number.
