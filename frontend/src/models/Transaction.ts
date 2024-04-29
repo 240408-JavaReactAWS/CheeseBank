@@ -2,10 +2,10 @@ import { User } from "./User";
 
 export interface Transaction {
     id: number
-    type: string,
-    transaction_amount: number,
+    amount: number,
     description: string,
-    timeStamp: Date,
-    current_balance: number,
-    user: User
+    target_account: number
+    time_stamp: Date,
+    transaction_type: string,
+    user: User,
 }

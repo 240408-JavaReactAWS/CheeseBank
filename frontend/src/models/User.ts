@@ -2,12 +2,12 @@ export interface User {
     id: number,
     first_name: string,
     last_name: string,
-    user_name: string,
+    username: string,
     password: string,
     email: string,
     dob: Date,
-    phone_number: number,
-    token: string,
-    isFrozen: boolean,
-    balance: number
+    phone: number,
+    is_frozen: boolean,
+    balance: number,
+    user_type: string
 }
