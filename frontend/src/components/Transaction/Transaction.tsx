@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { User } from '../../models/User';
 import './Transaction.css';
 
@@ -11,7 +11,7 @@ function Transaction() {
     const[showWithdrawInfo, setShowWithdrawInfo] = useState(false);
     const[showTransferInfo, setShowTransferInfo] = useState(false);
     const[emailTo, setEmailTo] = useState("");
-    const[amount, setAmount] = useState(0);
+    const[amount, setAmount] = useState(BigInt(0));
     const[transactionType, setTransactionType] = useState("");
     const[description, setDescription] = useState("");
     const[user,setUser] =useState<User>()
@@ -21,9 +21,8 @@ function Transaction() {
     useEffect(() => {
         
     const getUserByUsername = async() => {
-        // let currentUser =localStorage.getItem("username");
-              let currentUser = "jDoe"
-        await axios.get(`http://localhost:8080/api/v1/user/username?username=${currentUser}`)
+        let currentUser =localStorage.getItem("username");
+        await axios.get(`http://localhost:8080/api/users/username/${currentUser}`)
         .then((response) => {
             let data = response.data;
             setUser(data);
@@ -60,15 +59,15 @@ function Transaction() {
         setTransactionType("TRANSFER")
      }
 
-    const handleAmountInput = (event) => {
-        setAmount(event.target.value)
+    const handleAmountInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setAmount(BigInt(event.target.value));
      }
 
-     const handleDescriptionInput = (event) => {
+     const handleDescriptionInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDescription(event.target.value)
      }
 
-     const handleEmailFromInput = (event) => {
+     const handleEmailFromInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmailTo(event.target.value)
      
      }
@@ -77,7 +76,14 @@ function Transaction() {
 
 let submitTransaction = async() => {
     try {
-        const response = await axios.post(`http://localhost:8080/api/v1/user/transaction?userId=${user?.id}&amount=${amount}&email=${user?.email}&description=${description}&type=${transactionType}`);
+        const response = await axios.post(`http://localhost:8080/api/transactions/${transactionType.toLowerCase()}`,{
+            amount: amount,
+            description: description
+
+        }, {
+            withCredentials: true
+        
+        }); 
         console.log(response.data);
         // Check if the response indicates success
         if (response.status === 200) {
@@ -92,7 +98,7 @@ let submitTransaction = async() => {
         alert("Transaction unsuccessful. Please try again.");
     } finally {
         // Reset input fields
-        setAmount(0);
+        setAmount(BigInt(0));
         setDescription("");
     }
 }
@@ -115,7 +121,7 @@ let submitTranfer = async() => {
     } finally {
         // Reset input fields
         setEmailTo("");
-        setAmount(0);
+        setAmount(BigInt(0));
         setDescription("");
     }
 }
@@ -138,7 +144,7 @@ let submitTranfer = async() => {
                     <input type='text' value={emailTo} onChange={handleEmailFromInput} placeholder='Transfer To'/>
                 )
             }
-            <input type='number' value={amount} onChange={handleAmountInput} placeholder='Amount'/>
+            <input type='number' value={amount.toString()} onChange={handleAmountInput} placeholder='Amount'/>
             <input type='text' value={description} onChange={handleDescriptionInput} placeholder='Description'/>
           
 
