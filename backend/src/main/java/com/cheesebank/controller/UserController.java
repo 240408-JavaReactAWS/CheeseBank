@@ -120,14 +120,6 @@ public class UserController {
         String password = request.get("password");
         userService.resetPassword(token, password);
     }
-//    // Reset password
-//    @PatchMapping("/reset")
-//    public ResponseEntity<User> resetPassword(@RequestBody User user) throws UserNotFoundException, InvalidCredentialsException {
-//        userService.resetPassword(user);
-////        emailService.sendPasswordChangeEmail(user);
-//        System.out.println("Password reset");
-//        return ResponseEntity.ok(user);
-//    }
 
     // View user information
     @GetMapping("/profile")
