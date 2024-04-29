@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Transaction } from '../../models/Transaction';
 import './TransactionHistory.css';
@@ -43,26 +43,26 @@ function TransactionHistory(props: TransactionHistoryProps) {
 
     }, []); 
 
- const downloadCSV = () => {
+//  const downloadCSV = () => {
  
-    const headers = Object.keys(transactions[0]).filter(key => key !== 'user');
-    const csvContent =
-        "data:text/csv;charset=utf-8," +
-        headers.join(",") +
-        "\n" +
-        transactions.map(transaction =>
-            headers.map(header => transaction[header]).join(",")
-        ).join("\n");
+//     const headers = Object.keys(transactions[0]).filter(key => key !== 'user');
+//     const csvContent =
+//         "data:text/csv;charset=utf-8," +
+//         headers.join(",") +
+//         "\n" +
+//         transactions.map(transaction =>
+//             headers.map(header => transaction[header]).join(",")
+//         ).join("\n");
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "transactions.csv");
-    document.body.appendChild(link);
-    link.click();
-};
+//     const encodedUri = encodeURI(csvContent);
+//     const link = document.createElement("a");
+//     link.setAttribute("href", encodedUri);
+//     link.setAttribute("download", "transactions.csv");
+//     document.body.appendChild(link);
+//     link.click();
+// };
 
-  const search = (searchText) => {
+  const search = (searchText: string) => {
 
     const filteredTransactions = transactions.filter(transaction => {
       const description = transaction.description ? transaction.description.toLowerCase() : '';
@@ -75,7 +75,7 @@ function TransactionHistory(props: TransactionHistoryProps) {
     setFilteredTransactions(filteredTransactions);
   }
 
-  const handleSearchInputChange = (e) => {
+  const handleSearchInputChange = (e : ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value;
     setSearchText(searchValue);
 
@@ -129,7 +129,7 @@ function TransactionHistory(props: TransactionHistoryProps) {
                 </tbody>
             </table>
 
-                <button className='download-btn' onClick={downloadCSV}>Download CSV</button>
+                {/* <button className='download-btn' onClick={downloadCSV}>Download CSV</button> */}
 
         </div>
         

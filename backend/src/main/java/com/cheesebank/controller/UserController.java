@@ -1,5 +1,6 @@
 package com.cheesebank.controller;
 
+import com.cheesebank.dto.UserDTO;
 import com.cheesebank.exception.*;
 import com.cheesebank.model.User;
 import com.cheesebank.model.UserType;
@@ -46,7 +47,7 @@ public class UserController {
 
     // Login user
     @PostMapping("/login")
-    public ResponseEntity<User> loginUser(@RequestBody User user, HttpSession session) throws InvalidCredentialsException {
+    public ResponseEntity<UserDTO> loginUser(@RequestBody User user, HttpSession session) throws InvalidCredentialsException {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser != null) {
             System.out.println("Already logged in to an account");
@@ -56,7 +57,7 @@ public class UserController {
         User loggedInUser = userService.loginUser(user.getUsername(), user.getPassword());
         session.setAttribute("user", loggedInUser);
         System.out.println("User login successful");
-        return ResponseEntity.ok(loggedInUser);
+        return ResponseEntity.ok(new UserDTO(loggedInUser.getUsername(), loggedInUser.getUserType()));
     }
 
     @GetMapping("/login")

@@ -1,44 +1,41 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import {useNavigate, useLocation } from 'react-router-dom';
 import './ResetPassword.css';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
 import { set } from 'date-fns';
 
+
 function ResetPassword() {
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const token = searchParams.get('token');
-    const[password, setPassword] = useState("");
-    const[showPassword, setShowPassword] = useState(false);
-    const[passwordDoesnotmatch, setPasswordDoesnotmatch] = useState(false);
-    const[passwordlengthError, setPasswordLengthVError] = useState(false);
-    const[confirmPassword, setConfirmPassword] = useState("");
-    const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const token = searchParams.get('token');
+  const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [passwordDoesnotmatch, setPasswordDoesnotmatch] = useState<boolean>(false);
+  const [passwordlengthError, setPasswordLengthVError] = useState<boolean>(false);
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const navigate = useNavigate();
 
-
- const handlePasswordInput = (event) => {
+  const handlePasswordInput = (event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
- }
+  }
 
- const handleConfirmPasswordInput = (event) => {
+  const handleConfirmPasswordInput = (event: ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(event.target.value);
- }
+  }
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-
-
-
- const handleResetPassword = () => {
+  const handleResetPassword = () => {
     if(password !== confirmPassword){
-        setPasswordDoesnotmatch(true);
-        setPasswordLengthVError(false);
-        setPassword("");
-        setConfirmPassword("");
-        return;
+      setPasswordDoesnotmatch(true);
+      setPasswordLengthVError(false);
+      setPassword("");
+      setConfirmPassword("");
+      return;
     }
     if(password.length < 8){
         setPasswordLengthVError(true);
