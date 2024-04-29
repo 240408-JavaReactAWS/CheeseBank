@@ -1,17 +1,24 @@
 import React from 'react';
-import './App.css';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+// import Header from './components/Header/Header';
+// import Footer from './components/Footer/Footer';
+// import Navbar from './components/Navbar/Navbar';
+// import LandingPage from './views/LandingPage';
+// import Dashboard from './views/Dashboard';
+// import AdminDashboard from './views/AdminDashboard';
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
+      {/* <Header />
+      <Navbar /> */}
       <Routes>
-        {/* <Route path='/' element={<COMPONENT />}></Route>
-        <Route path='/' element={<COMPONENT />}></Route>
-        <Route path='/' element={<COMPONENT />}></Route> */}
-        <Route path='*' element={<h1>404 Not Found</h1>}></Route>
+        {/* <Route path="/" element={<LandingPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} /> */}
       </Routes>
-    </BrowserRouter>
+      {/* <Footer /> */}
+    </>
   );
 }
 
