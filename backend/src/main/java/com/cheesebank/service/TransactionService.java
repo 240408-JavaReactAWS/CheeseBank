@@ -23,10 +23,13 @@ public class TransactionService {
 
     private final UserRepository userRepository;
 
+    private final EmailService emailService;
+
     @Autowired
     public TransactionService(TransactionRepository transactionRepository, UserRepository userRepository, EmailService emailService) {
         this.transactionRepository = transactionRepository;
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     // Withdrawal, deposit, or transfer
@@ -56,7 +59,7 @@ public class TransactionService {
         }
 
         transaction.setUser(user);
-//        emailService.sendTransactionEmail(user, transaction);
+        emailService.sendTransactionEmail(user, transaction);
         transactionRepository.save(transaction);
     }
 

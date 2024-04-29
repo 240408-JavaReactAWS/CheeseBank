@@ -85,7 +85,7 @@ public class UserService {
         possibleUser.setPassword(passwordEncoder.encode(password));
         possibleUser.setToken(null);
         userRepository.save(possibleUser);
-        emailService.sendEmail(possibleUser.getEmail(), "Password Reset", " Dear "+ possibleUser.getFirstName() +"\n\n" + "Your password has been reset \n\nIf you did not initiate this action, please contact Cheese Bank immediately." + "\n\nCheese Bank");
+        emailService.sendPasswordChangeEmail(possibleUser);
     }
 
     // View user information

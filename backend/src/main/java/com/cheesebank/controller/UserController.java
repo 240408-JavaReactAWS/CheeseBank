@@ -196,7 +196,7 @@ public class UserController {
         sessionUser.setPhone(phone);
 
         userService.updateUser(sessionUser);
-//        emailService.sendAccountUpdateEmail(sessionUser);
+        emailService.sendAccountUpdateEmail(sessionUser);
         System.out.println("User information updated");
         return ResponseEntity.ok(sessionUser);
     }
