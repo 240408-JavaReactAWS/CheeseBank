@@ -7,13 +7,6 @@ import './Transaction.css';
 
 function Transaction() {
 
-    const [transaction, setTransaction] = useState({
-        type: "",
-        transaction_amount: 0,
-        description: "",
-        current_balance: 0
-    });
-
     const[showDepositInfo, setShowDepositInfo] = useState(false);
     const[showWithdrawInfo, setShowWithdrawInfo] = useState(false);
     const[showTransferInfo, setShowTransferInfo] = useState(false);
@@ -133,13 +126,13 @@ let submitTranfer = async() => {
   return (
     <>
     <section className='transaction-body'>
-    <div >
-        <br />
-        <button className='depositTransaction' onClick={handleDepositClick}>Deposit</button>
-        <button className='withdrawalTransaction' onClick={handleWithdrawClick}>Withdraw</button>
-        <button className='transferTransaction' onClick={handleTransferClick}>Transfer</button>
+        <div className='transaction-btn' >
+      
+            <button className='depositTransaction' onClick={handleDepositClick}>Deposit</button>
+            <button className='withdrawalTransaction' onClick={handleWithdrawClick}>Withdraw</button>
+            <button className='transferTransaction' onClick={handleTransferClick}>Transfer</button>
 
-         <div>
+        <div>
               {
                 showTransferInfo && (
                     <input type='text' value={emailTo} onChange={handleEmailFromInput} placeholder='Transfer To'/>
