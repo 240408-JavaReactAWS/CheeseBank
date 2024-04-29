@@ -120,7 +120,7 @@ public class TransactionController {
 
     // View transaction history of any user (ADMIN ONLY)
     @GetMapping("/history/{username}")
-    public ResponseEntity<Page<Transaction>> viewTransactionHistory(@PathVariable String username, HttpSession session, Pageable pageable) throws UserNotFoundException {
+    public ResponseEntity<Page<Transaction>> viewTransactionHistoryByUsername(@PathVariable String username, HttpSession session, Pageable pageable) throws UserNotFoundException {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null || sessionUser.getUserType() != UserType.ADMIN) {
             System.out.println("Unauthorized access");
@@ -140,40 +140,29 @@ public class TransactionController {
 
     // View all transactions of a time range
     @GetMapping("/history/range/{startDate}/{endDate}")
-    public ResponseEntity<Page<Transaction>> viewTransactionHistory(@RequestBody LocalDateTime startDate, @RequestBody LocalDateTime endDate, HttpSession session, Pageable pageable) {
+    public ResponseEntity<Page<Transaction>> filterByTimeRange(@PathVariable LocalDateTime startDate, @PathVariable LocalDateTime endDate, HttpSession session, Pageable pageable) {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
             System.out.println("Unauthorized access");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        Page<Transaction> transactionHistory = transactionService.getTransactionsByTimeRange(sessionUser, startDate, endDate, pageable);
-        if (transactionHistory.isEmpty()) {
-            System.out.println("No transactions found");
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
         System.out.println("Successfully retrieved past transactions from " + startDate + " to " + endDate);
-        return ResponseEntity.ok(transactionHistory);
+        return ResponseEntity.ok(transactionService.getTransactionsByTimeRange(sessionUser, startDate, endDate, pageable));
     }
 
     // View all transactions of a type
-    @GetMapping("/history/type/{transactionType}")
-    public ResponseEntity<Page<Transaction>> viewTransactionHistory(@PathVariable TransactionType transactionType, HttpSession session, Pageable pageable) {
+    @GetMapping("/history/type/{type}")
+    public ResponseEntity<Page<Transaction>> filterByType(@PathVariable String type, HttpSession session, Pageable pageable) {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
             System.out.println("Unauthorized access");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Page<Transaction> transactionHistory = transactionService.getTransactionsByType(sessionUser, transactionType, pageable);
-        if (transactionHistory.isEmpty()) {
-            System.out.println("No transactions found");
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-
-        System.out.println("Successfully retrieved past " + transactionType + "s");
-        return ResponseEntity.ok(transactionHistory);
+        TransactionType transactionType = TransactionType.valueOf(type.toUpperCase());
+        System.out.println("Successfully retrieved past " + type + "s");
+        return ResponseEntity.ok(transactionService.getTransactionsByType(sessionUser, transactionType, pageable));
     }
 
 }
