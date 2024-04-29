@@ -129,7 +129,7 @@ public class Transaction {
                 ", description='" + description + '\'' +
                 ", timeStamp=" + timeStamp +
                 ", targetAccount=" + targetAccount +
-                ", user=" + user +
+                ", user=" + user.getUsername() +
                 '}';
     }
 

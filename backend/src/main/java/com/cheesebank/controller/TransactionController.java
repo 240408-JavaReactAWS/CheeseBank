@@ -45,10 +45,13 @@ public class TransactionController {
         }
 
         transaction.setTransactionType(TransactionType.WITHDRAWAL);
+        transaction.setDescription("Withdrawal");
+        transaction.setUser(sessionUser);
         transaction.setTargetAccount(sessionUser.getId());
-        Transaction savedTransaction = transactionService.createTransaction(transaction);
+        transaction.setTimeStamp(LocalDateTime.now());
+        transactionService.createTransaction(transaction);
         System.out.println("Successfully withdrew " + transaction.getAmount() + " from your account");
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedTransaction);
+        return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
     }
 
     // Deposit
@@ -60,10 +63,13 @@ public class TransactionController {
         }
 
         transaction.setTransactionType(TransactionType.DEPOSIT);
+        transaction.setDescription("Deposit");
+        transaction.setUser(sessionUser);
         transaction.setTargetAccount(sessionUser.getId());
-        Transaction savedTransaction = transactionService.createTransaction(transaction);
+        transaction.setTimeStamp(LocalDateTime.now());
+        transactionService.createTransaction(transaction);
         System.out.println("Successfully deposited " + transaction.getAmount() + " into your account");
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedTransaction);
+        return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
     }
 
     // Transfer
@@ -76,7 +82,7 @@ public class TransactionController {
 
         if (sessionUser.getBalance().compareTo(transaction.getAmount()) < 0) {
             System.out.println("Insufficient funds");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transaction);
+            throw new InsufficientBalanceException("Insufficient balance");
         }
 
         User targetUser = userService.findById(transaction.getTargetAccount());
@@ -85,9 +91,11 @@ public class TransactionController {
         }
 
         transaction.setTransactionType(TransactionType.TRANSFER);
-        Transaction savedTransaction = transactionService.createTransaction(transaction);
+        transaction.setUser(sessionUser);
+        transaction.setTimeStamp(LocalDateTime.now());
+        transactionService.createTransaction(transaction);
         System.out.println("Successfully transferred " + transaction.getAmount() + " to " + targetUser.getFirstName() + " " + targetUser.getLastName() + "'s account");
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedTransaction);
+        return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
     }
 
     // View transaction history

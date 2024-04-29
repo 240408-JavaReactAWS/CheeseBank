@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class TransactionService {
@@ -32,38 +33,29 @@ public class TransactionService {
     }
 
     // Withdrawal, deposit, or transfer
-    @Transactional
-    public Transaction createTransaction(Transaction transaction) throws UserNotFoundException, InsufficientBalanceException, AccountFrozenException {
-        User user = transaction.getUser();
+    @Transactional()
+    public void createTransaction(Transaction transaction) throws UserNotFoundException, InsufficientBalanceException, AccountFrozenException {
+        int userId = transaction.getUser().getId();
 
-        if (user.getFrozen()) {
-            throw new AccountFrozenException("Account is frozen");
-        }
-
-        if (transaction.getTransactionType() == TransactionType.WITHDRAWAL || transaction.getTransactionType() == TransactionType.TRANSFER) {
+        User user = userRepository.findById(userId).orElseThrow();
+        if (transaction.getTransactionType() == TransactionType.WITHDRAWAL) {
             if (user.getBalance().compareTo(transaction.getAmount()) < 0) {
-                throw new InsufficientBalanceException("Insufficient funds");
+                throw new InsufficientBalanceException("Insufficient balance");
             }
-        }
-
-        // Transfer to another account
-        if (transaction.getTransactionType() == TransactionType.TRANSFER) {
-            User targetUser = userRepository.findById(transaction.getTargetAccount())
-                    .orElseThrow(() -> new UserNotFoundException("User not found"));
-
+            user.setBalance(user.getBalance().subtract(transaction.getAmount()));
+        } else if (transaction.getTransactionType() == TransactionType.DEPOSIT) {
+            user.setBalance(user.getBalance().add(transaction.getAmount()));
+        } else if (transaction.getTransactionType() == TransactionType.TRANSFER) {
+            if (user.getBalance().compareTo(transaction.getAmount()) < 0) {
+                throw new InsufficientBalanceException("Insufficient balance");
+            }
+            user.setBalance(user.getBalance().subtract(transaction.getAmount()));
+            User targetUser = userRepository.findById(transaction.getTargetAccount()).orElseThrow();
             targetUser.setBalance(targetUser.getBalance().add(transaction.getAmount()));
-            userRepository.save(targetUser);
         }
 
-        transaction.setTimeStamp(LocalDateTime.now());
-        Transaction savedTransaction = transactionRepository.save(transaction);
-
-        user.setBalance(transaction.getTransactionType() == TransactionType.DEPOSIT
-                ? user.getBalance().add(transaction.getAmount())
-                : user.getBalance().subtract(transaction.getAmount()));
-        userRepository.save(user);
-//        emailService.sendTransactionEmail(user, savedTransaction);
-        return savedTransaction;
+        transaction.setUser(user);
+        transactionRepository.save(transaction);
     }
 
     // View transaction history
