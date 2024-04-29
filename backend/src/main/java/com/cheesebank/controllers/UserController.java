@@ -1,6 +1,7 @@
 package com.cheesebank.controllers;
 
 import com.cheesebank.exceptions.TransactionCannotBeProcessException;
+import com.cheesebank.exceptions.UserNotFoundException;
 import com.cheesebank.models.TransactionHistory;
 import com.cheesebank.models.TransactionType;
 import com.cheesebank.models.User;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/user")
@@ -186,5 +189,27 @@ public class UserController {
 
 
         return new ResponseEntity<User>(updatedUser, HttpStatus.OK);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<User> forgotPassword(@RequestParam String email) {
+
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        }
+        String token = UUID.randomUUID().toString();
+        user.setToken(token);
+        userService.updateUser(user);
+        emailService.sendEmail(email, "Password Reset", "Dear " + user.getFirst_name() + "," + "\n\nPlease click the link to reset your password: http://localhost:3000/reset-password?token=" + token + "\n\nCheese Bank");
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/reset-password")
+    public void resetPassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        String password = request.get("password");
+        userService.resetPassword(token, password);
+
     }
 }

@@ -12,17 +12,20 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
 
     private UserRepo userRepo;
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
-    public UserService(UserRepo userRepo) {
+   public UserService(UserRepo userRepo, EmailService emailService) {
         this.userRepo = userRepo;
+        this.emailService = emailService;
     }
-
     public User findByUserId(int userId) {
         Optional<User> user = userRepo.findById(userId);
 
@@ -81,6 +84,18 @@ public class UserService {
             throw new UserNotFoundException("User not found");
         }
     }
+
+    public void resetPassword(String token, String password) {
+        User user = userRepo.findByToken(token);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        user.setPassword(password);
+        user.setToken(null);
+        userRepo.save(user);
+        emailService.sendEmail(user.getEmail(), "Password Reset", " Dear "+ user.getFirst_name() +"\n\n" + "Your password has been reset \n\n \"If you did not initiate this action, please contact Cheese Bank immediately." + "\n\nCheese Bank");
+    }
+
 
     //User story 3: As a user, I can update my personal information such as name,email, and phone number.
     // note: does the above method "update user" do this?...
