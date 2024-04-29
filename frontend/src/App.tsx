@@ -6,10 +6,13 @@ import Navbar from './components/Navbar';
 import LandingPage from './views/Login';
 import Dashboard from './views/Dashboard';
 import AdminDashboard from './views/AdminDashboard';
+import { AuthContext } from './context/AuthContext';
+import { useAuth } from './hooks/useAuth';
 
 function App() {
+  const { user, login, logout, setUser } = useAuth();
   return (
-    <>
+    <AuthContext.Provider value={{ user,setUser }}>
       <Header />
       <Navbar />
       <Routes>
@@ -18,7 +21,7 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Routes>
       <Footer />
-    </>
+    </AuthContext.Provider>
   );
 }
 
