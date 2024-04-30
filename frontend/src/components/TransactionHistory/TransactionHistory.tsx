@@ -17,12 +17,27 @@ function TransactionHistory() {
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const transactionsPerPage = 5;
+  const [typeFilter, setTypeFilter] = useState('');
+  const [startDateFilter, setStartDateFilter] = useState('');
+  const [endDateFilter, setEndDateFilter] = useState('');
 
   useEffect(() => {
-    const getAllTransactionHistory = async () => {
+    const getTransactionHistory = async (type?: string, startDate?: string, endDate?: string) => {
       setLoading(true);
       try {
-        const response = await axios.get<ResponseData>(`${process.env.REACT_APP_BACKEND_URL}/api/transactions/history`, {
+        let url = `${process.env.REACT_APP_BACKEND_URL}/api/transactions/history`;
+        if (type) {
+          url += `/type/${type}`;
+        } else if (startDate && endDate) {
+          const startDateTime = new Date(startDate + 'T00:00:00');
+          const formattedStartDate = startDateTime.toISOString().slice(0, -1);
+
+          const endDateTime = new Date(endDate + 'T23:59:59');
+          const formattedEndDate = endDateTime.toISOString().slice(0, -1);
+
+          url += `/range/${formattedStartDate}/${formattedEndDate}`;
+        }
+        const response = await axios.get<ResponseData>(url, {
           withCredentials: true
         });
         setTransactions(response.data.content);
@@ -35,9 +50,9 @@ function TransactionHistory() {
     };
 
     if (sessionUser) {
-      getAllTransactionHistory();
+      getTransactionHistory(typeFilter, startDateFilter, endDateFilter);
     }
-  }, [sessionUser]);
+  }, [sessionUser, typeFilter, startDateFilter, endDateFilter]);
 
   const search = (searchText: string) => {
     const filtered = transactions.filter(transaction => {
@@ -67,7 +82,31 @@ function TransactionHistory() {
         type="text"
         value={searchText}
         onChange={handleSearchInputChange}
-        placeholder="Search..."
+        placeholder="Search by description..."
+      />
+      <Form.Select
+        value={typeFilter}
+        onChange={(e) => setTypeFilter(e.target.value)}
+      >
+        <option value="">Filter by Type</option>
+        <option value="WITHDRAWAL">Withdrawals</option>
+        <option value="DEPOSIT">Deposits</option>
+        <option value="TRANSFER">Transfers</option>
+        <option value="RECEIVE">Received</option>
+      </Form.Select>
+      <span>From</span>
+      <Form.Control
+        type="date"
+        value={startDateFilter}
+        onChange={(e) => setStartDateFilter(e.target.value)}
+        placeholder="From"
+      />
+      <span>To</span>
+      <Form.Control
+        type="date"
+        value={endDateFilter}
+        onChange={(e) => setEndDateFilter(e.target.value)}
+        placeholder="To"
       />
 
       {loading && <p>Loading...</p>}
