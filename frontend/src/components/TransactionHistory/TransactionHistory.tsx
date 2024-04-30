@@ -136,7 +136,7 @@ function TransactionHistory() {
       <Button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
         &lt;
       </Button>
-      <span>{currentPage}</span>
+      <span>     {currentPage}     </span>
       <Button onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(filteredTransactions.length / transactionsPerPage)}>
         &gt;
       </Button>
