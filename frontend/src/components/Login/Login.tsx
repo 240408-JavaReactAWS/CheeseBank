@@ -1,11 +1,22 @@
 import React, { ChangeEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSession } from '../../context/SessionContext';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 import './Login.css';
 
-const Login = () => {
+const Login: React.FC = () => {
+  const { sessionUser } = useSession();
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  React.useEffect(() => {
+    if (sessionUser) {
+      navigate('/dashboard');
+    }
+  }, [sessionUser, navigate]);
 
   const handleLogin = async () => {
     try {
