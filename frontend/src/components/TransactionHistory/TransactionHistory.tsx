@@ -23,8 +23,6 @@ function TransactionHistory() {
                 const response = await axios.get<ResponseData>(`${process.env.REACT_APP_BACKEND_URL}/api/transactions/history`, {
                     withCredentials: true
                 });
-                console.log(response.data.content);
-                console.log(Array.isArray(response.data.content));
                 setTransactions(response.data.content);
                 setFilteredTransactions(response.data.content);
             } catch (error) {
