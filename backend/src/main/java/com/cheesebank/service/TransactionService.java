@@ -78,7 +78,7 @@ public class TransactionService {
         }
 
         transaction.setUser(user);
-//        emailService.sendTransactionEmail(user, transaction);
+        emailService.sendTransactionEmail(user, transaction);
         transactionRepository.save(transaction);
     }
 
