@@ -13,17 +13,16 @@ import Login from './components/Login/Login';
 function App() {
   return (
     <>
-    <Header />
-    <Navbar />
-    <Login/>
     
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/transaction" element={<Transaction />} />
-      <Route path="/admin-dashboard" element={<AdminDashboard />} />
-    </Routes>
-    <Footer />
+
+      <Routes>
+           <Route path='/login' element={<Login />}></Route>
+            <Route path='/dashboard' element={<Dashboard />}></Route>
+           
+      </Routes>
+
+    
+
     </>
   );
 }

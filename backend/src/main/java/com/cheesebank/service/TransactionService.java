@@ -14,7 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class TransactionService {
@@ -32,36 +36,46 @@ public class TransactionService {
         this.emailService = emailService;
     }
 
-    // Withdrawal, deposit, or transfer
-    @Transactional()
+    // Withdrawal, deposit
+    @Transactional(rollbackFor = {UserNotFoundException.class, InsufficientBalanceException.class, AccountFrozenException.class})
     public void createTransaction(Transaction transaction) throws UserNotFoundException, InsufficientBalanceException, AccountFrozenException {
         int userId = transaction.getUser().getId();
 
+        // Retrieve user from the database
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
+        // Check if user account is frozen
         if (user.getFrozen()) {
             throw new AccountFrozenException("Account is frozen");
         }
+        BigDecimal amount = transaction.getAmount();
+        BigDecimal currentBalance;
+
+        // Process transaction based on type
         if (transaction.getTransactionType() == TransactionType.WITHDRAWAL) {
-            if (user.getBalance().compareTo(transaction.getAmount()) < 0) {
+            // Check if user has sufficient balance
+            if (user.getBalance().compareTo(amount) < 0) {
+                emailService.sendInsufficientBalanceEmail(user, amount);
                 throw new InsufficientBalanceException("Insufficient balance");
             }
-            user.setBalance(user.getBalance().subtract(transaction.getAmount()));
+            user.setBalance(user.getBalance().subtract(amount));
+            currentBalance = user.getBalance();
+            emailService.sendWithdrawEmail(user, amount);
         } else if (transaction.getTransactionType() == TransactionType.DEPOSIT) {
-            user.setBalance(user.getBalance().add(transaction.getAmount()));
-        } else if (transaction.getTransactionType() == TransactionType.TRANSFER) {
-            if (user.getBalance().compareTo(transaction.getAmount()) < 0) {
-                throw new InsufficientBalanceException("Insufficient balance");
-            }
-            user.setBalance(user.getBalance().subtract(transaction.getAmount()));
-            User targetUser = userRepository.findById(transaction.getTargetAccount()).orElseThrow();
-            targetUser.setBalance(targetUser.getBalance().add(transaction.getAmount()));
+            user.setBalance(user.getBalance().add(amount));
+            currentBalance = user.getBalance();
+            emailService.sendDepositEmail(user, amount);
+        } else {
+            throw new IllegalArgumentException("Invalid transaction type");
         }
 
+        // Update user's balance and save transaction
+        transaction.setCurentBalance(currentBalance);
         transaction.setUser(user);
-        emailService.sendTransactionEmail(user, transaction);
+        userRepository.save(user);
         transactionRepository.save(transaction);
     }
+
 
     // View transaction history
     @Transactional(readOnly = true)
@@ -79,6 +93,64 @@ public class TransactionService {
     @Transactional(readOnly = true)
     public Page<Transaction> getTransactionsByType(User currentUser, TransactionType transactionType, Pageable pageable) {
         return transactionRepository.findByUserAndTransactionType(currentUser, transactionType, pageable);
+    }
+
+    public List<Transaction> findAllByUserUsername(User searchedUser) {
+        List<Transaction> list = transactionRepository.findAllByUserUsername(searchedUser.getUsername());
+        Collections.sort(list, new Comparator<Transaction>() {
+            @Override
+            public int compare(Transaction t1, Transaction t2) {
+                return t2.getTimeStamp().compareTo(t1.getTimeStamp());
+            }
+        });
+        return list;
+    }
+
+    @Transactional()
+    public Transaction CreateTransfer(String senderEmail, String ReceiverEmail, Transaction transaction) {
+
+        User sender = userRepository.findByEmail(senderEmail).orElseThrow();
+        User receiver = userRepository.findByEmail(ReceiverEmail).orElseThrow();
+
+        if(sender.getEmail().equals(receiver.getEmail())) {
+            throw new IllegalArgumentException("Cannot transfer to yourself");
+        } else if(sender.getBalance().compareTo(transaction.getAmount()) < 0) {
+            emailService.sendInsufficientBalanceEmail(sender, transaction.getAmount());
+            throw new IllegalArgumentException("Insufficient balance");
+        }
+
+        BigDecimal amount = transaction.getAmount();
+        sender.setBalance(sender.getBalance().subtract( amount ));
+        receiver.setBalance(receiver.getBalance().add( amount ));
+        userRepository.save(sender);
+        userRepository.save(receiver);
+
+        Transaction transaction1 = new Transaction();
+        transaction1.setTransactionType(TransactionType.TRANSFER);
+        transaction1.setCurentBalance(sender.getBalance());
+        transaction1.setDescription(transaction.getDescription());
+        transaction1.setAmount(amount);
+        transaction1.setUser(sender);
+        transaction1.setTimeStamp(LocalDateTime.now());
+        transaction1.setTargetAccount(sender.getId());
+        transactionRepository.save(transaction1);
+        emailService.sendTransferEmailToSender(sender, amount, receiver.getEmail());
+
+        Transaction transaction2 = new Transaction();
+        transaction2.setTransactionType(TransactionType.TRANSFER);
+        transaction2.setUser(receiver);
+        transaction2.setDescription(transaction.getDescription());
+        transaction2.setCurentBalance(receiver.getBalance());
+        transaction2.setAmount(amount);
+        transaction2.setTimeStamp(LocalDateTime.now());
+        transaction2.setTargetAccount(receiver.getId());
+        transactionRepository.save(transaction2);
+        emailService.sendTransferEmailToReceiver(receiver, amount, sender.getEmail());
+
+//        if(sender.getBalance().compareTo(BigDecimal.ZERO) < 100){
+//            emailService.sendLowBalanceEmail(sender);
+//        }
+        return transaction;
     }
 
 }

@@ -27,6 +27,8 @@ public class Transaction {
 
     @Column(nullable = false)
     private LocalDateTime timeStamp;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal currentBalance;
 
     @Column(nullable = false)
     private int targetAccount;
@@ -39,14 +41,23 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(Long id, TransactionType transactionType, BigDecimal amount, String description, LocalDateTime timeStamp, int targetAccount, User user) {
+    public Transaction(Long id, TransactionType transactionType, BigDecimal amount, String description, LocalDateTime timeStamp, BigDecimal currentBalance, int targetAccount, User user) {
         this.id = id;
         this.transactionType = transactionType;
         this.amount = amount;
         this.description = description;
         this.timeStamp = timeStamp;
+        this.currentBalance = currentBalance;
         this.targetAccount = targetAccount;
         this.user = user;
+    }
+
+    public BigDecimal getCurentBalance() {
+        return currentBalance;
+    }
+
+    public void setCurentBalance(BigDecimal curentBalance) {
+        this.currentBalance = curentBalance;
     }
 
     public Long getId() { return id; }
@@ -105,17 +116,18 @@ public class Transaction {
 
     // Helper Methods
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Transaction transaction = (Transaction) o;
-        return id == transaction.id && targetAccount == transaction.targetAccount && transactionType == transaction.transactionType && amount.equals(transaction.amount) && description.equals(transaction.description) && timeStamp.equals(transaction.timeStamp) && user.equals(transaction.user);
+        Transaction that = (Transaction) o;
+        return targetAccount == that.targetAccount && Objects.equals(id, that.id) && transactionType == that.transactionType && Objects.equals(amount, that.amount) && Objects.equals(description, that.description) && Objects.equals(timeStamp, that.timeStamp) && Objects.equals(currentBalance, that.currentBalance) && Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, transactionType, amount, description, timeStamp, targetAccount, user);
+        return Objects.hash(id, transactionType, amount, description, timeStamp, currentBalance, targetAccount, user);
     }
 
     @Override
@@ -126,9 +138,9 @@ public class Transaction {
                 ", amount=" + amount +
                 ", description='" + description + '\'' +
                 ", timeStamp=" + timeStamp +
+                ", currentBalance=" + currentBalance +
                 ", targetAccount=" + targetAccount +
-                ", user=" + user.getUsername() +
+                ", user=" + user +
                 '}';
     }
-
 }

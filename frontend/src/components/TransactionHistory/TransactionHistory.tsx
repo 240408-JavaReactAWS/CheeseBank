@@ -1,102 +1,90 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Transaction } from '../../models/Transaction';
 import './TransactionHistory.css';
 import { User } from '../../models/User';
-import { set } from 'date-fns';
+import { ITransaction } from '../../models/ITransaction';
 
 interface TransactionHistoryProps {
-    user:User
+    updateTransactionHistory: () => void; 
 }
 
 function TransactionHistory(props: TransactionHistoryProps) {
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [transactions, setTransactions] = useState<ITransaction[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [user, setUser] = useState<User>();
     const [searchText, setSearchText] = useState('');
-    const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+    const [filteredTransactions, setFilteredTransactions] = useState<ITransaction[]>([]);
+    const [currentPage, setCurrentPage] = useState(1); 
+    const transactionsPerPage = 10; 
 
     useEffect(() => {
-    
-        // let userId = localStorage.getItem('username');
-        let username = "jDoe";
+        const username = localStorage.getItem('username');
 
-     const getAllTransactionHistory = async () => {
-                setLoading(true);
-               await axios.get(`http://localhost:8080/api/v1/history/transaction?username=${username}`)
-                .then((response) => {
-                let data = response.data;
-                    setTransactions(data);
-                    setFilteredTransactions(data);
-                    setUser(data[0].user);
-                    setLoading(false);
-                })
-                .catch((error) =>{
-                    setError(true);
-                    setLoading(false);
+        const getAllTransactionHistory = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get(`http://localhost:8080/api/transactions/history/${username}`, {
+                    withCredentials: true
                 });
+                const data = response.data;
+                        console.log(data)
+                setTransactions(data);
+                setFilteredTransactions(data);
+                setUser(data[0]?.user);
+                setLoading(false);
+            } catch (error) {
+                setError(true);
+                setLoading(false);
+            }
+        };
 
+        getAllTransactionHistory();
+    }, [props.updateTransactionHistory]);
+
+    const search = (searchText: string) => {
+        const filteredTransactions = transactions.filter(transaction => {
+            const description = transaction.description ? transaction.description.toLowerCase() : '';
+            const type = transaction.transactionType ? transaction.transactionType.toLowerCase() : '';
+
+            return description.includes(searchText.toLowerCase()) ||
+                   type.includes(searchText.toLowerCase());
+        });
+
+        setFilteredTransactions(filteredTransactions);
     };
 
-    getAllTransactionHistory();
+    const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const searchValue = e.target.value;
+        setSearchText(searchValue);
+        search(searchValue);
+    };
 
-    }, []); 
+    const handleNextPage = () => {
+        setCurrentPage(currentPage + 1);
+    };
 
-//  const downloadCSV = () => {
- 
-//     const headers = Object.keys(transactions[0]).filter(key => key !== 'user');
-//     const csvContent =
-//         "data:text/csv;charset=utf-8," +
-//         headers.join(",") +
-//         "\n" +
-//         transactions.map(transaction =>
-//             headers.map(header => transaction[header]).join(",")
-//         ).join("\n");
+    const handlePreviousPage = () => {
+        setCurrentPage(currentPage - 1);
+    };
 
-//     const encodedUri = encodeURI(csvContent);
-//     const link = document.createElement("a");
-//     link.setAttribute("href", encodedUri);
-//     link.setAttribute("download", "transactions.csv");
-//     document.body.appendChild(link);
-//     link.click();
-// };
+    
 
-  const search = (searchText: string) => {
-
-    const filteredTransactions = transactions.filter(transaction => {
-      const description = transaction.description ? transaction.description.toLowerCase() : '';
-      const type = transaction.type? transaction.type.toLowerCase() : '';
-
-      return description.includes(searchText.toLowerCase()) ||
-             type.includes(searchText.toLowerCase());
-    });
-
-    setFilteredTransactions(filteredTransactions);
-  }
-
-  const handleSearchInputChange = (e : ChangeEvent<HTMLInputElement>) => {
-    const searchValue = e.target.value;
-    setSearchText(searchValue);
-
-    // Call the search function with the updated search value
-    search(searchValue);
-  }
-
-
-
+    const indexOfLastTransaction = currentPage * transactionsPerPage;
+    const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+    const currentTransactions = filteredTransactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
 
     return (
         <div className='transaction-history'>
-            <h2>Transaction History</h2> 
-        <input className='search-bar'
-        type="text"
-        value={searchText}
-        onChange={handleSearchInputChange}
-        placeholder="Search..."
-        />
-        <h4>Name: <span>{user?.first_name} {user?.last_name}</span> </h4>
-      
+            <h2>Transaction History</h2>
+            <input
+                className='search-bar'
+                type="text"
+                value={searchText}
+                onChange={handleSearchInputChange}
+                placeholder="Search..."
+            />
+            <h4>Name: <span>{user?.first_name} {user?.last_name}</span></h4>
             {loading && <p>Loading...</p>}
             {error && <p>Error fetching data</p>}
             <table>
@@ -107,32 +95,33 @@ function TransactionHistory(props: TransactionHistoryProps) {
                         <th>Transaction Amount</th>
                         <th className='description'>Description</th>
                         <th>Date</th>
-                        <th>Current Balance</th>
-                 
+                        <th>Balance</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredTransactions.map((transaction) => {
-                        return (
-                          
-                            <tr key={transaction.id}>
-                                <td>{transaction.id}</td>
-                                <td>{transaction.type}</td>
-                                <td>{transaction.type === 'WITHDRAWAL' ? `(${transaction.transaction_amount})` : transaction.transaction_amount}</td>
-                                <td>{transaction.description}</td>
-                                <td>{new Date(transaction.timeStamp).toLocaleString()}</td>
-                                <td>{transaction.current_balance}</td>
-                              
-                            </tr>
-                        );
-                    })}
+                    {currentTransactions.map((transaction) => (
+                        <tr key={transaction.id}>
+                            <td>{transaction.id}</td>
+                            <td>{transaction.transactionType}</td>
+                            <td>{transaction.transactionType === 'WITHDRAWAL' ? `(${transaction.amount})` : transaction.amount}</td>
+                            <td>{transaction.description}</td>
+                            <td>{new Date(transaction.timeStamp).toLocaleString()}</td>
+                            <td>{transaction.curentBalance}</td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
-
-                {/* <button className='download-btn' onClick={downloadCSV}>Download CSV</button> */}
-
+            {filteredTransactions.length > transactionsPerPage && (
+                <div>
+                    <button className='mr-5 p-button mt-2 rounded btn btn-secondary' onClick={handlePreviousPage} disabled={currentPage === 1}>
+                        Previous
+                    </button>
+                    <button  className='ml-5 mt-2 rounded btn btn-secondary' onClick={handleNextPage} disabled={indexOfLastTransaction >= filteredTransactions.length}>
+                        Next
+                    </button>
+                </div>
+            )}
         </div>
-        
     );
 }
 
