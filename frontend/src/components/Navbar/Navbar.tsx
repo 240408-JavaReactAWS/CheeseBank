@@ -1,32 +1,23 @@
 import React from 'react';
 import './Navbar.css';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
-    const logoutHandler = () => {
-        axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/logout`, {}, {
-            withCredentials: true
-        }).then(() => {
-            window.location.href = '/';
-        });
-    }
-
-    return (
-        <nav>
-            {
-            /* Navbar content goes here */
-                <ul>
-                    <li>Home</li>
-                    <li>Start a Transaction</li>
-                    <li>Transaction History</li>
-                    <li>Account information</li>
-                    {/* ADJUST NAVBAR AS NEEDED */}
-                </ul>
-
-            }
-            <button onClick={logoutHandler}>Log out</button>
-        </nav>
-    );
+        return (
+            <nav className="navbar navbar-expand-lg navbar-dark bg-warning"> 
+            {/* <a className="navbar-brand" href="#">Navbar</a> */}
+            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span className="navbar-toggler-icon"></span>
+            </button>
+            <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div className="navbar-nav">
+                    <Link className="nav-item nav-link" to="/">Home</Link> {/* TODO DIRECT TO DASHBOARD */}
+                    <Link className="nav-item nav-link" to="/AboutUs">About Us</Link>
+                    <Link className="nav-item nav-link" to="/Locations">Find Locations and ATMs</Link>
+                </div>
+            </div>
+            </nav>
+        );
 };
 
 export default Navbar;

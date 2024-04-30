@@ -20,3 +20,12 @@
     background-color: #FF8B00;
     color: black;
 }
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+    color: black;
+}
+
+.navbar .nav-link:active {
+    color: rgb(255, 140, 0);
+}
