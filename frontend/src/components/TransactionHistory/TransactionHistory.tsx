@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Transaction } from '../../models/Transaction';
 import './TransactionHistory.css';
 import { User } from '../../models/User';
-import { set } from 'date-fns';
 
 interface TransactionHistoryProps {
     user:User
