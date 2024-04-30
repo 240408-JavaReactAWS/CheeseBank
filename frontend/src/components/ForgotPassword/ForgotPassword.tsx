@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Modal from '../Modal/Modal';
+import { Modal, Button } from 'react-bootstrap';
 import './ForgotPassword.css';
 
 const ForgotPassword: React.FC = () => {
@@ -37,13 +37,23 @@ const ForgotPassword: React.FC = () => {
       {!submitted &&
         <>
           <input value={email} onChange={handleEmailChange} placeholder="Email" />
-          <button onClick={handleForgotPassword}>Reset Password</button>
+          <Button onClick={handleForgotPassword}>Reset Password</Button>
         </>
       }
       {submitted &&
         <>
-          <Modal isOpen={isModalOpen} onClose={closeModal}>Check your email for further instructions.</Modal>
-          <p>Email has been sent with reset instructions</p>
+          <Modal show={isModalOpen} onHide={closeModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Password Reset</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>If the email is valid, a reset link will be sent.</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={closeModal}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          <p>Check your email for further instructions.</p>
         </>
       }
     </div>
