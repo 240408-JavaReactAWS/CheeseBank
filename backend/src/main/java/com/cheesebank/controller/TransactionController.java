@@ -50,6 +50,7 @@ public class TransactionController {
         transaction.setUser(sessionUser);
         transaction.setTargetAccount(sessionUser.getId());
         transaction.setTimeStamp(LocalDateTime.now());
+        transaction.setResultBalance(sessionUser.getBalance());
         transactionService.createTransaction(transaction);
         System.out.println("Successfully withdrew " + transaction.getAmount() + " from your account");
         return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
@@ -68,6 +69,7 @@ public class TransactionController {
         transaction.setUser(sessionUser);
         transaction.setTargetAccount(sessionUser.getId());
         transaction.setTimeStamp(LocalDateTime.now());
+        transaction.setResultBalance(sessionUser.getBalance());
         transactionService.createTransaction(transaction);
         System.out.println("Successfully deposited " + transaction.getAmount() + " into your account");
         return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
@@ -82,7 +84,8 @@ public class TransactionController {
         }
 
         if (sessionUser.getBalance().compareTo(transaction.getAmount()) < 0) {
-            System.out.println("Insufficient funds");
+            System.out.println("ln 87: " + sessionUser.getBalance());
+            System.out.println("ln 88: " + transaction.getAmount());
             throw new InsufficientBalanceException("Insufficient balance");
         }
 
@@ -94,6 +97,7 @@ public class TransactionController {
         transaction.setTransactionType(TransactionType.TRANSFER);
         transaction.setUser(sessionUser);
         transaction.setTimeStamp(LocalDateTime.now());
+        transaction.setResultBalance(sessionUser.getBalance());
         transactionService.createTransaction(transaction);
         System.out.println("Successfully transferred " + transaction.getAmount() + " to " + targetUser.getFirstName() + " " + targetUser.getLastName() + "'s account");
         return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
