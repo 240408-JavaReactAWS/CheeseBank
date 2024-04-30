@@ -16,7 +16,7 @@ function TransactionHistory() {
         const getAllTransactionHistory = async () => {
             setLoading(true);
             try {
-                const response = await axios.get<Transaction[]>(`http://localhost:8080/api/v1/history/transaction?username=${sessionUser}`);
+                const response = await axios.get<Transaction[]>(`${process.env.REACT_APP_BACKEND_URL}/api/transactions/history`);
                 setTransactions(response.data);
                 setFilteredTransactions(response.data);
             } catch (error) {

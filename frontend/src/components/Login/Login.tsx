@@ -6,21 +6,15 @@ import { Form, Button } from 'react-bootstrap';
 import './Login.css';
 
 const Login: React.FC = () => {
-  const { sessionUser } = useSession();
+  // const { sessionUser, login } = useSession();
   const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  React.useEffect(() => {
-    if (sessionUser) {
-      navigate('/dashboard');
-    }
-  }, [sessionUser, navigate]);
-
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/users/login', {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/login`, {
         username,
         password
       }, {
@@ -28,12 +22,12 @@ const Login: React.FC = () => {
       });
 
       if (response.status === 200) {
-        localStorage.setItem('username', username);
+        // login(username);
+        navigate('/dashboard');
         console.log('Login successful');
       }
     } catch (error) {
       console.error('Login failed:', error);
-
     }
   }
 
