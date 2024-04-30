@@ -29,7 +29,7 @@ public class EmailService {
 
     public void sendTransactionEmail(User user, Transaction transaction) {
         String subject = "Transaction Notification";
-        String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nA transaction has been made on your account. Details:\n\n" + transaction.toString();
+        String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nA transaction has been made on your account. \n\nDetails:\n" + "Transaction Type: " + transaction.getTransactionType() + "\nAmount: " + transaction.getAmount() + "\nDescription: " + transaction.getDescription() + "\nTime Stamp: " + transaction.getTimeStamp() + "\nTarget Account: " + transaction.getTargetAccount() + "\nResult Balance: " + transaction.getTransactionType() + "\nTransaction Amount: " + transaction.getAmount() + "\nDescription: " + transaction.getDescription() + "\nTime Stamp: " + transaction.getTimeStamp() + "\nTarget Account: " + transaction.getTargetAccount() + "\nDescription: " + transaction.getDescription();
         sendEmail(user.getEmail(), subject, text);
     }
 
