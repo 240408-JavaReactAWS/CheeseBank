@@ -75,22 +75,20 @@ function TransactionHistory() {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>Transaction ID</th>
-            <th>Transaction Type</th>
-            <th>Transaction Amount</th>
-            <th>Description</th>
             <th>Date</th>
-            <th>Current Balance</th>
+            <th>Transaction Type</th>
+            <th>Description</th>
+            <th>Transaction Amount</th>
+            <th>Balance</th>
           </tr>
         </thead>
         <tbody>
           {transactionsToDisplay.map((transaction) => (
             <tr key={transaction.id}>
-              <td>{transaction.id}</td>
+              <td>{new Date(transaction.timeStamp).toLocaleString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</td>
               <td>{transaction.transactionType}</td>
-              <td>{transaction.transactionType === 'WITHDRAWAL' ? `(${transaction.amount})` : transaction.amount}</td>
               <td>{transaction.description}</td>
-              <td>{new Date(transaction.timeStamp).toLocaleString()}</td>
+              <td>{transaction.transactionType === 'WITHDRAWAL' ? `(${transaction.amount})` : transaction.amount}</td>
               <td>{transaction.resultBalance}</td>
             </tr>
           ))}
