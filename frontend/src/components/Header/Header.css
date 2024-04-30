@@ -1,5 +1,5 @@
 .header {
-    position: fixed;
+    position: relative;
     left: 0;
     top: 0;
     width: 100%;
@@ -9,3 +9,13 @@
     text-align: center;
     padding: 10px 0;
 }
+
+.title {
+    font-size: 2em;
+    font-family: fantasy;
+  }
+  
+  .subtitle {
+    font-size: 1em;
+    font-family: Arial, Helvetica, serif;
+  }

@@ -15,14 +15,18 @@ function App() {
     <>
     <Header />
     <Navbar />
+
     <Login/>
     
+    <div className="content">
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/transaction" element={<Transaction />} />
+      <Route path="/transaction" element={<Transaction />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
     </Routes>
+    </div>
+
     <Footer />
     </>
   );
