@@ -354,7 +354,7 @@ dlldata.c
 
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
-
+Package-lock.json
 # .NET Core
 project.lock.json
 project.fragment.lock.json
@@ -651,3 +651,4 @@ MigrationBackup/
 .ionide/
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,java,intellij+all,intellij+iml,maven,vs,react
+.env

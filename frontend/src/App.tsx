@@ -3,10 +3,11 @@ import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import Navbar from './components/Navbar/Navbar';
+import ResetPassword from './components/ResetPassword/ResetPassword';
 import Dashboard from './views/Dashboard';
 import AdminDashboard from './views/AdminDashboard';
 import Home from './views/Home';
-import ResetPassword from './components/ResetPassword/ResetPassword';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App: React.FC = () => {
   return (

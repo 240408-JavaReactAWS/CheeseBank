@@ -21,7 +21,7 @@ import java.util.UUID;
 @RequestMapping("/api/users")
 @CrossOrigin(
         origins = "${frontend.url}",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE},
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH, RequestMethod.DELETE},
         allowCredentials = "true"
 )
 public class UserController {

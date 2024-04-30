@@ -1,57 +1,63 @@
+import React, { useState } from 'react';
 import axios from 'axios';
-import { set } from 'date-fns';
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Modal, Button } from 'react-bootstrap';
 import './ForgotPassword.css';
 
-function ForgotPassword() {
+const ForgotPassword: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const[email, setEmail] = useState("");
-    const[success, setSuccess] = useState(false);
-    const navigate = useNavigate();
+  const handleForgotPassword = () => {
+    const formData = new FormData();
+    formData.append('email', email);
 
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/forgot-password`, formData)
+      .then(() => {
+        setIsModalOpen(true);
+        setEmail('');
+        setSubmitted(true);
+      })
+      .catch((error) => {
+        setIsModalOpen(true);
+        setSubmitted(true);
+      });
+  }
 
-    const navigateToHomePage = () => {
-        navigate('/');
-    }
+  const closeModal = () => {
+    setIsModalOpen(false);
+  }
 
-  
-
-    const handleForgotPassword = () => {
-        axios.post(`http://localhost:8080/api/v1/user/forgot-password?email=${email}`)
-                .then(() => {
-                alert("If the email exists, a reset link will be sent to it.");
-                setEmail("");
-                setSuccess(true);
-                    })
-                .catch((error) => {
-                    setSuccess(true);
-                    setEmail("");
-                    alert("If the email exists, a reset link will be sent to it.");
-                    });
-    }
-
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
 
   return (
     <div className='forgot-password'>
-      
-      {
-          !success && 
-          <>
-          <input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Email" />
-          <button onClick={handleForgotPassword}>Send Reset Link</button>
-          </>
-      }
-      { success && 
+      {!submitted &&
         <>
-        <p>Reset link sent to email</p>
-        <button onClick={navigateToHomePage}>Go to Home</button>
+          <input value={email} onChange={handleEmailChange} placeholder="Email" />
+          <Button onClick={handleForgotPassword}>Reset Password</Button>
         </>
-     
       }
-  
+      {submitted &&
+        <>
+          <Modal show={isModalOpen} onHide={closeModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Password Reset</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>If the email is valid, a reset link will be sent.</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={closeModal}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          <p>Check your email for further instructions.</p>
+        </>
+      }
     </div>
   )
 }
 
-export default ForgotPassword
+export default ForgotPassword;

@@ -22,7 +22,7 @@ import java.util.Optional;
 @RequestMapping("/api/transactions")
 @CrossOrigin(
         origins = "${frontend.url}",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE},
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH, RequestMethod.DELETE},
         allowCredentials = "true"
 )
 public class TransactionController {
