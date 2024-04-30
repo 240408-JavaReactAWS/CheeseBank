@@ -1,0 +1,13 @@
+.dashboard {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 20px;
+  height: 100vh;
+  padding: 20px;
+}
+
+.top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
