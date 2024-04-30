@@ -4,6 +4,10 @@ import { Transaction } from '../../models/Transaction';
 import './TransactionHistory.css';
 import { useSession } from '../../context/SessionContext';
 
+interface ResponseData {
+    content: Transaction[];
+}
+
 function TransactionHistory() {
     const { sessionUser } = useSession();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -16,9 +20,13 @@ function TransactionHistory() {
         const getAllTransactionHistory = async () => {
             setLoading(true);
             try {
-                const response = await axios.get<Transaction[]>(`${process.env.REACT_APP_BACKEND_URL}/api/transactions/history`);
-                setTransactions(response.data);
-                setFilteredTransactions(response.data);
+                const response = await axios.get<ResponseData>(`${process.env.REACT_APP_BACKEND_URL}/api/transactions/history`, {
+                    withCredentials: true
+                });
+                console.log(response.data.content);
+                console.log(Array.isArray(response.data.content));
+                setTransactions(response.data.content);
+                setFilteredTransactions(response.data.content);
             } catch (error) {
                 setError(true);
             } finally {
