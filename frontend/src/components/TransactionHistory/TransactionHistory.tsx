@@ -5,7 +5,7 @@ import { useSession } from '../../context/SessionContext';
 import { Container, Table, Form, Button } from 'react-bootstrap';
 
 interface ResponseData {
-    content: Transaction[];
+  content: Transaction[];
 }
 
 function TransactionHistory() {
@@ -15,27 +15,28 @@ function TransactionHistory() {
   const [error, setError] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
-  const [showAll, setShowAll] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const transactionsPerPage = 5;
 
   useEffect(() => {
-      const getAllTransactionHistory = async () => {
-        setLoading(true);
-        try {
-          const response = await axios.get<ResponseData>(`${process.env.REACT_APP_BACKEND_URL}/api/transactions/history`, {
-              withCredentials: true
-          });
-          setTransactions(response.data.content);
-          setFilteredTransactions(response.data.content);
-        } catch (error) {
-          setError(true);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      if (sessionUser) {
-        getAllTransactionHistory();
+    const getAllTransactionHistory = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get<ResponseData>(`${process.env.REACT_APP_BACKEND_URL}/api/transactions/history`, {
+          withCredentials: true
+        });
+        setTransactions(response.data.content);
+        setFilteredTransactions(response.data.content);
+      } catch (error) {
+        setError(true);
+      } finally {
+        setLoading(false);
       }
+    };
+
+    if (sessionUser) {
+      getAllTransactionHistory();
+    }
   }, [sessionUser]);
 
   const search = (searchText: string) => {
@@ -53,11 +54,11 @@ function TransactionHistory() {
     search(searchValue);
   };
 
-  if (!sessionUser) {
-    return <div>Please log in to view this page.</div>;
-  }
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
-  const transactionsToDisplay = showAll ? filteredTransactions : filteredTransactions.slice(0, 5);
+  const transactionsToDisplay = filteredTransactions.slice((currentPage - 1) * transactionsPerPage, currentPage * transactionsPerPage);
 
   return (
     <Container>
@@ -95,8 +96,12 @@ function TransactionHistory() {
           ))}
         </tbody>
       </Table>
-      <Button onClick={() => setShowAll(!showAll)}>
-        {showAll ? 'Show Less' : 'View All Transactions'}
+      <Button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+        &lt;
+      </Button>
+      <span>{currentPage}</span>
+      <Button onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(filteredTransactions.length / transactionsPerPage)}>
+        &gt;
       </Button>
     </Container>
   );
