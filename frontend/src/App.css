@@ -5,6 +5,14 @@
   min-height: 100vh;
 }
 
+.body-content {
+  padding: 20px; /* does not seem to work... */
+}
+
+.navbar-padding {
+  padding: 20px;  /* having issues with the component stuff... */
+}
+
 .content {
   flex: 1 0 auto; /* This will make the content expand and push the footer to the bottom */
 }

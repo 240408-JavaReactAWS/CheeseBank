@@ -1,0 +1,16 @@
+.about-us {
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+
+.about-us h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.about-us p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.5;
+}
