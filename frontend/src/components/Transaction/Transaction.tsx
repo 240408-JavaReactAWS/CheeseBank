@@ -34,25 +34,45 @@ const Transaction: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/transactions/${transactionType}`, {
-        amount,
-        description,
-        targetAccount
-      }, {
-        withCredentials: true
-      });
-    } catch (error) {
-      console.log(error)
-      setError('meep');
+
+    if (amount === '') {
+      setError('Amount is required!');
+      return;
     }
+
+    let dataToSend: { amount: string; description?: string; targetAccount?: string } = {
+      amount,
+      description
+    };
+
+    if (transactionType === 'transfer') {
+      if (targetAccount === '') {
+        setError('Recipient account is required!');
+        return;
+      }
+      dataToSend.targetAccount = targetAccount;
+    }
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/transactions/${transactionType}`, dataToSend, { withCredentials: true })
+    .then(response => {
+      console.log("Transaction successful!");
+      setAmount('');
+      setDescription('');
+      setTargetAccount('');
+      setError('Transaction successful!');
+      setTimeout(() => {
+        setError('');
+      }, 600);
+    })
+    .catch(err => {
+      setError(err.response.data);
+    });
   }
 
   return (
     <section className="transaction-body">
       <ToggleButtonGroup type="radio" name="transaction-type" defaultValue={transactionType} onChange={handleTransactionTypeChange}>
         <ToggleButton id="toggle-deposit" value="deposit">Deposit</ToggleButton>
-        <ToggleButton id="toggle-withdrawal" value="withdrawal">Withdrawal</ToggleButton>
+        <ToggleButton id="toggle-withdrawal" value="withdrawal">Withdraw</ToggleButton>
         <ToggleButton id="toggle-transfer" value="transfer">Transfer</ToggleButton>
       </ToggleButtonGroup>
 
@@ -77,6 +97,7 @@ const Transaction: React.FC = () => {
         <Button variant="primary" type="submit">
           Submit
         </Button>
+        <p className="recipient-error">{error}</p>
       </Form>
     </section>
   );

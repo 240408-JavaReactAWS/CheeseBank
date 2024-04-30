@@ -89,7 +89,7 @@ public class TransactionController {
 
         User targetUser = userService.findById(transaction.getTargetAccount());
         if (targetUser == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(transaction);
+            throw new UserNotFoundException("Recipient not found");
         }
 
         transaction.setTransactionType(TransactionType.TRANSFER);
