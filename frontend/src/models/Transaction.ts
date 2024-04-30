@@ -1,11 +1,18 @@
 import { User } from "./User";
 
+export enum TransactionType {
+    WITHDRAWAL = 'WITHDRAWAL',
+    DEPOSIT = 'DEPOSIT',
+    TRANSFER = 'TRANSFER'
+}
+
 export interface Transaction {
-    id: number
-    type: string,
-    transaction_amount: number,
+    id: number,
+    transactionType: TransactionType,
+    amount: number,
     description: string,
-    timeStamp: Date,
-    current_balance: number,
-    user: User
+    timeStamp: string,
+    targetAccount: number,
+    user: User,
+    resultBalance: number
 }
