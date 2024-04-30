@@ -42,24 +42,29 @@ public class TransactionService {
         if (user.getFrozen()) {
             throw new AccountFrozenException("Account is frozen");
         }
+
         if (transaction.getTransactionType() == TransactionType.WITHDRAWAL) {
             if (user.getBalance().compareTo(transaction.getAmount()) < 0) {
                 throw new InsufficientBalanceException("Insufficient balance");
             }
             user.setBalance(user.getBalance().subtract(transaction.getAmount()));
+            transaction.setResultBalance(user.getBalance());
         } else if (transaction.getTransactionType() == TransactionType.DEPOSIT) {
             user.setBalance(user.getBalance().add(transaction.getAmount()));
+            transaction.setResultBalance(user.getBalance());
         } else if (transaction.getTransactionType() == TransactionType.TRANSFER) {
             if (user.getBalance().compareTo(transaction.getAmount()) < 0) {
                 throw new InsufficientBalanceException("Insufficient balance");
             }
             user.setBalance(user.getBalance().subtract(transaction.getAmount()));
-            User targetUser = userRepository.findById(transaction.getTargetAccount()).orElseThrow();
+            transaction.setResultBalance(user.getBalance());
+            User targetUser = userRepository.findById(transaction.getTargetAccount())
+                    .orElseThrow(() -> new UserNotFoundException("Recipient not found"));
             targetUser.setBalance(targetUser.getBalance().add(transaction.getAmount()));
         }
 
         transaction.setUser(user);
-        emailService.sendTransactionEmail(user, transaction);
+//        emailService.sendTransactionEmail(user, transaction);
         transactionRepository.save(transaction);
     }
 
