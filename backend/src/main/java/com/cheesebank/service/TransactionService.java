@@ -43,15 +43,18 @@ public class TransactionService {
             throw new AccountFrozenException("Account is frozen");
         }
 
+        // Withdrawal
         if (transaction.getTransactionType() == TransactionType.WITHDRAWAL) {
             if (user.getBalance().compareTo(transaction.getAmount()) < 0) {
                 throw new InsufficientBalanceException("Insufficient balance");
             }
             user.setBalance(user.getBalance().subtract(transaction.getAmount()));
             transaction.setResultBalance(user.getBalance());
+        // Deposit
         } else if (transaction.getTransactionType() == TransactionType.DEPOSIT) {
             user.setBalance(user.getBalance().add(transaction.getAmount()));
             transaction.setResultBalance(user.getBalance());
+        // Transfer
         } else if (transaction.getTransactionType() == TransactionType.TRANSFER) {
             if (user.getBalance().compareTo(transaction.getAmount()) < 0) {
                 throw new InsufficientBalanceException("Insufficient balance");
@@ -61,6 +64,17 @@ public class TransactionService {
             User targetUser = userRepository.findById(transaction.getTargetAccount())
                     .orElseThrow(() -> new UserNotFoundException("Recipient not found"));
             targetUser.setBalance(targetUser.getBalance().add(transaction.getAmount()));
+
+            // Mirror transfer transaction on recipient's transaction history
+            Transaction targetTransaction = new Transaction();
+            targetTransaction.setTransactionType(TransactionType.RECEIVE);
+            targetTransaction.setAmount(transaction.getAmount());
+            targetTransaction.setDescription(user.getFirstName() + " " + user.getLastName() + ": \"" + transaction.getDescription() + "\"");
+            targetTransaction.setTimeStamp(LocalDateTime.now());
+            targetTransaction.setTargetAccount(user.getId());
+            targetTransaction.setResultBalance(targetUser.getBalance());
+            targetTransaction.setUser(targetUser);
+            transactionRepository.save(targetTransaction);
         }
 
         transaction.setUser(user);

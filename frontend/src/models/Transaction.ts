@@ -3,7 +3,8 @@ import { User } from "./User";
 export enum TransactionType {
     WITHDRAWAL = 'WITHDRAWAL',
     DEPOSIT = 'DEPOSIT',
-    TRANSFER = 'TRANSFER'
+    TRANSFER = 'TRANSFER',
+    RECEIVE = 'RECEIVE'
 }
 
 export interface Transaction {
