@@ -1,5 +1,7 @@
 import React, { ChangeEvent, useState } from 'react';
 import axios from 'axios';
+import { Form, Button } from 'react-bootstrap';
+import './Login.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -20,7 +22,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Login failed:', error);
-  
+
     }
   }
 
@@ -35,25 +37,31 @@ const Login = () => {
 
 
   return (
-    <div>
-      <label htmlFor="username">Username:</label>
-      <input
-        id="username"
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={handleUsernameInput}
-      />
-      <label htmlFor="password">Password:</label>
-      <input
-        id="password"
-        type="password"  // Changed input type to "password"
-        placeholder="Password"
-        value={password}
-        onChange={handlePasswordInput}
-      />
-      <button onClick={handleLogin}>Login</button>
-    </div>
+    <Form>
+      <Form.Group controlId="username">
+        <Form.Label>Username:</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={handleUsernameInput}
+        />
+      </Form.Group>
+
+      <Form.Group controlId="password">
+        <Form.Label>Password:</Form.Label>
+        <Form.Control
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={handlePasswordInput}
+        />
+      </Form.Group>
+
+      <Button variant="primary" onClick={handleLogin}>
+        Login
+      </Button>
+    </Form>
   );
 };
 
