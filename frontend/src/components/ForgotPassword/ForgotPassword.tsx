@@ -1,6 +1,6 @@
-import React, { useState, ChangeEvent } from 'react';
-import Modal from '../Modal/Modal';
+import React, { useState } from 'react';
 import axios from 'axios';
+import Modal from '../Modal/Modal';
 import './ForgotPassword.css';
 
 const ForgotPassword: React.FC = () => {
