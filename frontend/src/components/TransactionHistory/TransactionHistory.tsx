@@ -69,7 +69,6 @@ function TransactionHistory(props: TransactionHistoryProps) {
     };
 
     
-
     const indexOfLastTransaction = currentPage * transactionsPerPage;
     const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
     const currentTransactions = filteredTransactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
@@ -84,7 +83,7 @@ function TransactionHistory(props: TransactionHistoryProps) {
                 onChange={handleSearchInputChange}
                 placeholder="Search..."
             />
-            <h4>Name: <span>{user?.first_name} {user?.last_name}</span></h4>
+            <h4>Name: <span>{user?.firstName} {user?.lastName}</span></h4>
             {loading && <p>Loading...</p>}
             {error && <p>Error fetching data</p>}
             <table>

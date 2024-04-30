@@ -118,7 +118,7 @@ function Transaction({ updateTransactionHistory }: { updateTransactionHistory: (
 
     return (
         <div className='container'>
-            <div className='row mt-5'>
+            <div className='row'>
                 <div className='col-lg-3 balance-container mt-3 pt-2'>
                     <div className='balance-inner-container'>
                         <h4>Checking Account <em>(00{user?.id})</em> </h4>
@@ -130,7 +130,6 @@ function Transaction({ updateTransactionHistory }: { updateTransactionHistory: (
 
                         <div>
                             <p>Visa(5645)</p>
-                            <h6>{user?.first_name}</h6>
                         </div>
 
                         <h3>$302.45</h3>

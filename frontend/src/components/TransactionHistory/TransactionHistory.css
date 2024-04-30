@@ -4,7 +4,7 @@ h1 {
 }
 
 .transaction-history {
-    margin: 20px;
+
     padding: 20px;
     border-radius: 5px;
     position: relative;
@@ -19,7 +19,6 @@ h1 {
 .search-bar {
     margin: 1px;
     padding: 10px;
-
     border-radius: 5px;
 
 }
@@ -32,10 +31,13 @@ td {
     align-items: center;
     align-content: center;
     text-align: center;
+    width: 300px;
+
 }
 
 tbody tr {
     text-align: center;
+
 }
 
 tbody tr:nth-child(odd) {

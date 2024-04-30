@@ -9,11 +9,13 @@ import Home from './views/Home';
 import Dashboard from './views/Dashboard';
 import AdminDashboard from './views/AdminDashboard';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Login from './components/Login/Login';
 
 const App: React.FC = () => {
   return ( 
     <>
-    
+      <Header />
+      <Navbar />
 
       <Routes>
            <Route path='/login' element={<Login />}></Route>
@@ -21,6 +23,7 @@ const App: React.FC = () => {
            
       </Routes>
 
+    <Footer/>
     
 
     </>

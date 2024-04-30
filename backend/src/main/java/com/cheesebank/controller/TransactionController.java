@@ -51,7 +51,7 @@ public class TransactionController {
         transaction.setTargetAccount(sessionUser.getId());
         transaction.setCurentBalance(sessionUser.getBalance().subtract(transaction.getAmount()));
         transaction.setTimeStamp(LocalDateTime.now());
-        transaction.setResultBalance(sessionUser.getBalance());
+        transaction.setCurentBalance(sessionUser.getBalance());
         transactionService.createTransaction(transaction);
         System.out.println("Successfully withdrew " + transaction.getAmount() + " from your account");
         return ResponseEntity.status(HttpStatus.CREATED).body(transaction);

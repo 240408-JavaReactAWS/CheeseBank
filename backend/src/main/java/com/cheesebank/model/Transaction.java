@@ -33,9 +33,6 @@ public class Transaction {
     @Column(nullable = false)
     private int targetAccount;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal resultBalance;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId", nullable = false)
     @JsonIgnoreProperties({ "password" })
@@ -51,9 +48,8 @@ public class Transaction {
         this.amount = amount;
         this.description = description;
         this.timeStamp = timeStamp;
-        this.currentBalance = currentBalance;
         this.targetAccount = targetAccount;
-        this.resultBalance = resultBalance;
+        this.currentBalance = currentBalance;
         this.user = user;
     }
 
@@ -113,13 +109,6 @@ public class Transaction {
         this.targetAccount = targetAccount;
     }
 
-    public BigDecimal getResultBalance() {
-        return resultBalance;
-    }
-
-    public void setResultBalance(BigDecimal resultBalance) {
-        this.resultBalance = resultBalance;
-    }
 
     public User getUser() {
         return user;
