@@ -1,15 +1,18 @@
 import React, { ChangeEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 import './Login.css';
 
-const Login = () => {
+const Login: React.FC = () => {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/users/login', {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/login`, {
         username,
         password
       }, {
@@ -17,12 +20,11 @@ const Login = () => {
       });
 
       if (response.status === 200) {
-        localStorage.setItem('username', username);
+        navigate('/dashboard');
         console.log('Login successful');
       }
     } catch (error) {
       console.error('Login failed:', error);
-
     }
   }
 

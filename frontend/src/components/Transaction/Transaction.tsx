@@ -1,178 +1,106 @@
-
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import React, { SyntheticEvent, useEffect, useState } from 'react';
-import { User } from '../../models/User';
-import './Transaction.css';
+import { Form, InputGroup, ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
 
+const Transaction: React.FC = () => {
+  const [transactionType, setTransactionType] = useState('');
+  const [amount, setAmount] = useState('');
+  const [description, setDescription] = useState('');
+  const [targetAccount, setTargetAccount] = useState('');
+  const [error, setError] = useState('');
 
-function Transaction() {
+  const handleTransactionTypeChange = (value: string) => {
+    setTransactionType(value);
+  }
 
-    const[showDepositInfo, setShowDepositInfo] = useState(false);
-    const[showWithdrawInfo, setShowWithdrawInfo] = useState(false);
-    const[showTransferInfo, setShowTransferInfo] = useState(false);
-    const[emailTo, setEmailTo] = useState("");
-    const[amount, setAmount] = useState(BigInt(0));
-    const[transactionType, setTransactionType] = useState("");
-    const[description, setDescription] = useState("");
-    const[user,setUser] =useState<User>()
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let input = e.target.value;
+    let numericInput = input.replace(/\D/g, '');
+    let paddedInput = numericInput.padStart(3, '0');
+    let dollarAmount = `${paddedInput.slice(0, -2)}.${paddedInput.slice(-2)}`;
+    let dollarAmountWithoutLeadingZeros = dollarAmount === '' ? '' : parseFloat(dollarAmount).toFixed(2);
+    setAmount(dollarAmountWithoutLeadingZeros);
+  };
 
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDescription(e.target.value);
+  }
 
+  const handleRecipientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let input = e.target.value;
+    let numericInput = input.replace(/\D/g, '');
+    setTargetAccount(numericInput);
+  }
 
-    useEffect(() => {
-        
-    const getUserByUsername = async() => {
-        let currentUser =localStorage.getItem("username");
-        await axios.get(`http://localhost:8080/api/users/username/${currentUser}`)
-        .then((response) => {
-            let data = response.data;
-            setUser(data);
-            console.log(data)
-        }).catch((error) => {
-            console.log(error)
-        })
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (amount === '') {
+      setError('Amount is required!');
+      return;
     }
-    getUserByUsername();
 
-
-    },[]);
-
-   
-
-    const handleDepositClick = () => {
-        setShowDepositInfo(true);
-        setShowWithdrawInfo(false);
-        setShowTransferInfo(false);
-        setTransactionType("DEPOSIT")
+    let dataToSend: { amount: string; description?: string; targetAccount?: string } = {
+      amount,
+      description
     };
 
-      const handleWithdrawClick = () => {
-        setShowWithdrawInfo(true);
-        setShowTransferInfo(false);
-        setShowDepositInfo(false);
-        setTransactionType("WITHDRAWAL")
-     }
-
-     const handleTransferClick = () => {
-        setShowTransferInfo(true);
-        setShowDepositInfo(false);
-        setShowWithdrawInfo(false);
-        setTransactionType("TRANSFER")
-     }
-
-    const handleAmountInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAmount(BigInt(event.target.value));
-     }
-
-     const handleDescriptionInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setDescription(event.target.value)
-     }
-
-     const handleEmailFromInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setEmailTo(event.target.value)
-     
-     }
-
-
-
-let submitTransaction = async() => {
-    try {
-        const response = await axios.post(`http://localhost:8080/api/transactions/${transactionType.toLowerCase()}`,{
-            amount: amount,
-            description: description
-
-        }, {
-            withCredentials: true
-        
-        }); 
-        console.log(response.data);
-        // Check if the response indicates success
-        if (response.status === 200) {
-            // Show success alert
-            alert("Transaction successful!");
-        } else {
-            // Show error alert
-            alert("Transaction unsuccessful. Please try again.");
-        }
-    } catch (error) {
-        console.log(error);
-        alert("Transaction unsuccessful. Please try again.");
-    } finally {
-        // Reset input fields
-        setAmount(BigInt(0));
-        setDescription("");
+    if (transactionType === 'transfer') {
+      if (targetAccount === '') {
+        setError('Recipient account is required!');
+        return;
+      }
+      dataToSend.targetAccount = targetAccount;
     }
-}
-
-let submitTranfer = async() => {
-    try {
-        const response = await axios.post(`http://localhost:8080/api/v1/user/transfer?amount=${amount}&emailFrom=${user?.email}&emailTo=${emailTo}&description=${description}`);
-        console.log(response.data);
-        // Check if the response indicates success
-        if (response.status === 200) {
-            // Show success alert
-            alert("Transaction successful!");
-        } else {
-            // Show error alert
-            alert("Transaction unsuccessful. Please try again.");
-        }
-    } catch (error) {
-        console.log(error);
-        alert("Transaction unsuccessful. Please try again.");
-    } finally {
-        // Reset input fields
-        setEmailTo("");
-        setAmount(BigInt(0));
-        setDescription("");
-    }
-}
-
-
-    
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/transactions/${transactionType}`, dataToSend, { withCredentials: true })
+    .then(response => {
+      console.log("Transaction successful!");
+      setAmount('');
+      setDescription('');
+      setTargetAccount('');
+      setError('Transaction successful!');
+      setTimeout(() => {
+        setError('');
+      }, 600);
+    })
+    .catch(err => {
+      setError(err.response.data);
+    });
+  }
 
   return (
-    <>
-    <section className='transaction-body'>
-        <div className='transaction-btn' >
-      
-            <button className='depositTransaction' onClick={handleDepositClick}>Deposit</button>
-            <button className='withdrawalTransaction' onClick={handleWithdrawClick}>Withdraw</button>
-            <button className='transferTransaction' onClick={handleTransferClick}>Transfer</button>
+    <section className="transaction-body">
+      <ToggleButtonGroup type="radio" name="transaction-type" defaultValue={transactionType} onChange={handleTransactionTypeChange}>
+        <ToggleButton id="toggle-deposit" value="deposit">Deposit</ToggleButton>
+        <ToggleButton id="toggle-withdrawal" value="withdrawal">Withdraw</ToggleButton>
+        <ToggleButton id="toggle-transfer" value="transfer">Transfer</ToggleButton>
+      </ToggleButtonGroup>
 
-        <div>
-              {
-                showTransferInfo && (
-                    <input type='text' value={emailTo} onChange={handleEmailFromInput} placeholder='Transfer To'/>
-                )
-            }
-            <input type='number' value={amount.toString()} onChange={handleAmountInput} placeholder='Amount'/>
-            <input type='text' value={description} onChange={handleDescriptionInput} placeholder='Description'/>
-          
-
-         
-        </div>
-    </div>
-
-    {showDepositInfo && (
-        <>
-        <button className='depositBtn' onClick={submitTransaction}>Confirm Deposit</button>
-        </>
-   )}
-    {showWithdrawInfo && (
-        <>
-        <button onClick={submitTransaction} className='withdrawBtn'>Confirm Withdraw</button>
-        </>
-    )}
-    {showTransferInfo && (
-        <>
-        <button onClick={submitTranfer} className='transferBtn'>Confirm Transfer</button>
-        </>
-    )}
-    
-
-    
-      </section>
-    </>
-  )
+      <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="formAmount">
+          <Form.Label>Amount </Form.Label>
+          <InputGroup>
+            <InputGroup.Text>$</InputGroup.Text>
+            <Form.Control type="text" value={amount} onChange={handleAmountChange} placeholder="0.00" />
+          </InputGroup>
+        </Form.Group>
+        <Form.Group controlId="formDescription">
+          <Form.Label>Description</Form.Label>
+          <Form.Control type="text" value={description} onChange={handleDescriptionChange} placeholder="Optional" />
+        </Form.Group>
+        {transactionType === 'transfer' && (
+          <Form.Group controlId="formRecipientAccount">
+            <Form.Label>Recipient</Form.Label>
+            <Form.Control type="text" value={targetAccount} onChange={handleRecipientChange} placeholder="Account Number" />
+          </Form.Group>
+        )}
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+        <p className="recipient-error">{error}</p>
+      </Form>
+    </section>
+  );
 }
-export default Transaction
-    
+
+export default Transaction;

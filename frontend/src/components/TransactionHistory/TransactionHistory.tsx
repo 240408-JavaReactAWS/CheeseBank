@@ -1,138 +1,147 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Transaction } from '../../models/Transaction';
-import './TransactionHistory.css';
-import { User } from '../../models/User';
+import { useSession } from '../../context/SessionContext';
+import { Container, Table, Form, Button } from 'react-bootstrap';
 
-interface TransactionHistoryProps {
-    user:User
+interface ResponseData {
+  content: Transaction[];
 }
 
-function TransactionHistory(props: TransactionHistoryProps) {
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-    const [user, setUser] = useState<User>();
-    const [searchText, setSearchText] = useState('');
-    const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+function TransactionHistory() {
+  const { sessionUser } = useSession();
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const transactionsPerPage = 5;
+  const [typeFilter, setTypeFilter] = useState('');
+  const [startDateFilter, setStartDateFilter] = useState('');
+  const [endDateFilter, setEndDateFilter] = useState('');
 
-    useEffect(() => {
+  useEffect(() => {
+    const getTransactionHistory = async (type?: string, startDate?: string, endDate?: string) => {
+      setLoading(true);
+      try {
+        let url = `${process.env.REACT_APP_BACKEND_URL}/api/transactions/history`;
+        if (type) {
+          url += `/type/${type}`;
+        } else if (startDate && endDate) {
+          const startDateTime = new Date(startDate + 'T00:00:00');
+          const formattedStartDate = startDateTime.toISOString().slice(0, -1);
 
-        // let userId = localStorage.getItem('username');
-        let username = "jDoe";
+          const endDateTime = new Date(endDate + 'T23:59:59');
+          const formattedEndDate = endDateTime.toISOString().slice(0, -1);
 
-     const getAllTransactionHistory = async () => {
-                setLoading(true);
-               await axios.get(`http://localhost:8080/api/v1/history/transaction?username=${username}`)
-                .then((response) => {
-                let data = response.data;
-                    setTransactions(data);
-                    setFilteredTransactions(data);
-                    setUser(data[0].user);
-                    setLoading(false);
-                })
-                .catch((error) =>{
-                    setError(true);
-                    setLoading(false);
-                });
-
+          url += `/range/${formattedStartDate}/${formattedEndDate}`;
+        }
+        const response = await axios.get<ResponseData>(url, {
+          withCredentials: true
+        });
+        setTransactions(response.data.content);
+        setFilteredTransactions(response.data.content);
+      } catch (error) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    getAllTransactionHistory();
-
-    }, []);
-
-//  const downloadCSV = () => {
-
-//     const headers = Object.keys(transactions[0]).filter(key => key !== 'user');
-//     const csvContent =
-//         "data:text/csv;charset=utf-8," +
-//         headers.join(",") +
-//         "\n" +
-//         transactions.map(transaction =>
-//             headers.map(header => transaction[header]).join(",")
-//         ).join("\n");
-
-//     const encodedUri = encodeURI(csvContent);
-//     const link = document.createElement("a");
-//     link.setAttribute("href", encodedUri);
-//     link.setAttribute("download", "transactions.csv");
-//     document.body.appendChild(link);
-//     link.click();
-// };
+    if (sessionUser) {
+      getTransactionHistory(typeFilter, startDateFilter, endDateFilter);
+    }
+  }, [sessionUser, typeFilter, startDateFilter, endDateFilter]);
 
   const search = (searchText: string) => {
-
-    const filteredTransactions = transactions.filter(transaction => {
-      const description = transaction.description ? transaction.description : '';
-      const type = transaction.transactionType? transaction.transactionType : '';
-
-      return description.includes(searchText.toLowerCase()) ||
-             type.includes(searchText.toLowerCase());
+    const filtered = transactions.filter(transaction => {
+      const description = transaction.description?.toLowerCase() ?? '';
+      const type = transaction.transactionType.toLowerCase();
+      return description.includes(searchText.toLowerCase()) || type.includes(searchText.toLowerCase());
     });
+    setFilteredTransactions(filtered);
+  };
 
-    setFilteredTransactions(filteredTransactions);
-  }
-
-  const handleSearchInputChange = (e : ChangeEvent<HTMLInputElement>) => {
+  const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value;
     setSearchText(searchValue);
-
-    // Call the search function with the updated search value
     search(searchValue);
-  }
+  };
 
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
+  const transactionsToDisplay = filteredTransactions.slice((currentPage - 1) * transactionsPerPage, currentPage * transactionsPerPage);
 
-
-    return (
-        <div className='transaction-history'>
-            <h2>Transaction History</h2>
-        <input className='search-bar'
+  return (
+    <Container>
+      <h2>Transaction History</h2>
+      <Form.Control
         type="text"
         value={searchText}
         onChange={handleSearchInputChange}
-        placeholder="Search..."
-        />
-        <h4>Name: <span>{user?.firstName} {user?.lastName}</span> </h4>
+        placeholder="Search by description..."
+      />
+      <Form.Select
+        value={typeFilter}
+        onChange={(e) => setTypeFilter(e.target.value)}
+      >
+        <option value="">Filter by Type</option>
+        <option value="WITHDRAWAL">Withdrawals</option>
+        <option value="DEPOSIT">Deposits</option>
+        <option value="TRANSFER">Transfers</option>
+        <option value="RECEIVE">Received</option>
+      </Form.Select>
+      <span>From</span>
+      <Form.Control
+        type="date"
+        value={startDateFilter}
+        onChange={(e) => setStartDateFilter(e.target.value)}
+        placeholder="From"
+      />
+      <span>To</span>
+      <Form.Control
+        type="date"
+        value={endDateFilter}
+        onChange={(e) => setEndDateFilter(e.target.value)}
+        placeholder="To"
+      />
 
-            {loading && <p>Loading...</p>}
-            {error && <p>Error fetching data</p>}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Transaction ID</th>
-                        <th>Transaction Type</th>
-                        <th>Transaction Amount</th>
-                        <th className='description'>Description</th>
-                        <th>Date</th>
-                        <th>Current Balance</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredTransactions.map((transaction) => {
-                        return (
-
-                            <tr key={transaction.id}>
-                                <td>{transaction.id}</td>
-                                <td>{transaction.transactionType}</td>
-                                <td>{transaction.transactionType === 'WITHDRAWAL' ? `(${transaction.amount})` : transaction.amount}</td>
-                                <td>{transaction.description}</td>
-                                <td>{new Date(transaction.timeStamp).toLocaleString()}</td>
-                                <td>{transaction.resultBalance}</td>
-
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-
-                {/* <button className='download-btn' onClick={downloadCSV}>Download CSV</button> */}
-
-        </div>
-
-    );
+      {loading && <p>Loading...</p>}
+      {error && <p>Error fetching data</p>}
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Transaction Type</th>
+            <th>Description</th>
+            <th>Transaction Amount</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {transactionsToDisplay.map((transaction) => (
+            <tr key={transaction.id}>
+              <td>{new Date(transaction.timeStamp).toLocaleString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</td>
+              <td>{transaction.transactionType}</td>
+              <td>{transaction.description}</td>
+              <td>{transaction.transactionType === 'WITHDRAWAL' ? `(${transaction.amount})` : transaction.amount}</td>
+              <td>{transaction.resultBalance}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+      <Button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+        &lt;
+      </Button>
+      <span>     {currentPage}     </span>
+      <Button onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(filteredTransactions.length / transactionsPerPage)}>
+        &gt;
+      </Button>
+    </Container>
+  );
 }
 
 export default TransactionHistory;

@@ -46,7 +46,6 @@ public class TransactionController {
         }
 
         transaction.setTransactionType(TransactionType.WITHDRAWAL);
-        transaction.setDescription("Withdrawal");
         transaction.setUser(sessionUser);
         transaction.setTargetAccount(sessionUser.getId());
         transaction.setTimeStamp(LocalDateTime.now());
@@ -65,7 +64,6 @@ public class TransactionController {
         }
 
         transaction.setTransactionType(TransactionType.DEPOSIT);
-        transaction.setDescription("Deposit");
         transaction.setUser(sessionUser);
         transaction.setTargetAccount(sessionUser.getId());
         transaction.setTimeStamp(LocalDateTime.now());
@@ -91,7 +89,7 @@ public class TransactionController {
 
         User targetUser = userService.findById(transaction.getTargetAccount());
         if (targetUser == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(transaction);
+            throw new UserNotFoundException("Recipient not found");
         }
 
         transaction.setTransactionType(TransactionType.TRANSFER);
