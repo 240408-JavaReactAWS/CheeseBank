@@ -1,13 +1,19 @@
+export enum UserType {
+    USER = 'USER',
+    ADMIN = 'ADMIN'
+}
+
 export interface User {
     id: number,
-    first_name: string,
-    last_name: string,
-    user_name: string,
+    username: string,
     password: string,
+    firstName: string,
+    lastName: string,
     email: string,
-    dob: Date,
-    phone_number: number,
-    token: string,
+    dob: string,
+    phone: string,
+    balance: number,
+    userType: UserType,
     isFrozen: boolean,
-    balance: number
+    token?: string,
 }

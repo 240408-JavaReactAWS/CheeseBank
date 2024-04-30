@@ -18,7 +18,7 @@ function TransactionHistory(props: TransactionHistoryProps) {
     const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
 
     useEffect(() => {
-    
+
         // let userId = localStorage.getItem('username');
         let username = "jDoe";
 
@@ -41,10 +41,10 @@ function TransactionHistory(props: TransactionHistoryProps) {
 
     getAllTransactionHistory();
 
-    }, []); 
+    }, []);
 
 //  const downloadCSV = () => {
- 
+
 //     const headers = Object.keys(transactions[0]).filter(key => key !== 'user');
 //     const csvContent =
 //         "data:text/csv;charset=utf-8," +
@@ -65,8 +65,8 @@ function TransactionHistory(props: TransactionHistoryProps) {
   const search = (searchText: string) => {
 
     const filteredTransactions = transactions.filter(transaction => {
-      const description = transaction.description ? transaction.description.toLowerCase() : '';
-      const type = transaction.type? transaction.type.toLowerCase() : '';
+      const description = transaction.description ? transaction.description : '';
+      const type = transaction.transactionType? transaction.transactionType : '';
 
       return description.includes(searchText.toLowerCase()) ||
              type.includes(searchText.toLowerCase());
@@ -88,15 +88,15 @@ function TransactionHistory(props: TransactionHistoryProps) {
 
     return (
         <div className='transaction-history'>
-            <h2>Transaction History</h2> 
+            <h2>Transaction History</h2>
         <input className='search-bar'
         type="text"
         value={searchText}
         onChange={handleSearchInputChange}
         placeholder="Search..."
         />
-        <h4>Name: <span>{user?.first_name} {user?.last_name}</span> </h4>
-      
+        <h4>Name: <span>{user?.firstName} {user?.lastName}</span> </h4>
+
             {loading && <p>Loading...</p>}
             {error && <p>Error fetching data</p>}
             <table>
@@ -108,21 +108,21 @@ function TransactionHistory(props: TransactionHistoryProps) {
                         <th className='description'>Description</th>
                         <th>Date</th>
                         <th>Current Balance</th>
-                 
+
                     </tr>
                 </thead>
                 <tbody>
                     {filteredTransactions.map((transaction) => {
                         return (
-                          
+
                             <tr key={transaction.id}>
                                 <td>{transaction.id}</td>
-                                <td>{transaction.type}</td>
-                                <td>{transaction.type === 'WITHDRAWAL' ? `(${transaction.transaction_amount})` : transaction.transaction_amount}</td>
+                                <td>{transaction.transactionType}</td>
+                                <td>{transaction.transactionType === 'WITHDRAWAL' ? `(${transaction.amount})` : transaction.amount}</td>
                                 <td>{transaction.description}</td>
                                 <td>{new Date(transaction.timeStamp).toLocaleString()}</td>
-                                <td>{transaction.current_balance}</td>
-                              
+                                <td>{transaction.resultBalance}</td>
+
                             </tr>
                         );
                     })}
@@ -132,7 +132,7 @@ function TransactionHistory(props: TransactionHistoryProps) {
                 {/* <button className='download-btn' onClick={downloadCSV}>Download CSV</button> */}
 
         </div>
-        
+
     );
 }
 
