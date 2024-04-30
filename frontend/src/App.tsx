@@ -13,17 +13,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const App: React.FC = () => {
   return ( 
     <>
-      <SessionProvider>
-        <Header />
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        </Routes>
-        <Footer />
-      </SessionProvider>
+    
+
+      <Routes>
+           <Route path='/login' element={<Login />}></Route>
+            <Route path='/dashboard' element={<Dashboard />}></Route>
+           
+      </Routes>
+
+    
+
     </>
   );
 }

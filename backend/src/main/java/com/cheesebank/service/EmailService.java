@@ -8,6 +8,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class EmailService {
 
@@ -42,6 +44,47 @@ public class EmailService {
     public void sendPasswordChangeEmail(User user) {
         String subject = "Password Change Notification";
         String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nYour password has been changed.";
+        sendEmail(user.getEmail(), subject, text);
+    }
+
+    public void sendInsufficientBalanceEmail(User user, BigDecimal amount) {
+        String subject = "Insufficient Balance";
+        String text = "Dear "+ user.getFirstName() +","+ "\n\nYou cannot withdraw or transfer $" + amount + " due to insufficient funds.\n\nCheese Bank";
+        sendEmail(user.getEmail(), subject, text);
+    }
+
+    public void sendTransferEmailToSender(User user, BigDecimal amount, String emailTo) {
+        String subject = "Transfer Notification";
+        String text = "Dear "+ user.getFirstName() +","+ "\n\nYou have successfully transferred $" + amount + " to " + emailTo + ".\n\nCheese Bank";
+        sendEmail(user.getEmail(), subject, text);
+    }
+
+    public void sendTransferEmailToReceiver(User user, BigDecimal amount, String emailFrom) {
+        String subject = "Transfer Notification";
+        String text = "Dear "+ user.getFirstName() +","+ "\n\nYou have received a transfer of $" + amount + " from " + emailFrom + ".\n\nCheese Bank";
+        sendEmail(user.getEmail(), subject, text);
+    }
+
+    public void sendDepositEmail(User user, BigDecimal amount) {
+        String subject = "Deposit Notification";
+        String text = "Dear "+ user.getFirstName() +","+ "\n\nYou have successfully deposited $" + amount + " to your account.\n\nCheese Bank";
+        sendEmail(user.getEmail(), subject, text);
+    }
+    public void sendWithdrawEmail(User user, BigDecimal amount) {
+        String subject = "Withdraw Notification";
+        String text = "Dear "+ user.getFirstName() +","+ "\n\nYou have successfully withdrawn $" + amount + " from your account.\n\nCheese Bank";
+        sendEmail(user.getEmail(), subject, text);
+    }
+
+    public void sendLowBalanceEmail(User user) {
+        String subject = "Low Balance";
+        String text = "Dear "+ user.getFirstName() +","+ "\n\nYour account balance is low. Please deposit money to avoid any inconvenience.\n\nCheese Bank";
+        sendEmail(user.getEmail(), subject, text);
+    }
+
+    public void sendFrozenAccountEmail(User user) {
+        String subject = "Account Frozen";
+        String text = "Dear "+ user.getFirstName() +","+ "\n\nYour account has been frozen. Please contact customer service for more information.\n\nCheese Bank";
         sendEmail(user.getEmail(), subject, text);
     }
 

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name="transactions")
+@Table(name = "transactions")
 public class Transaction {
 
     @Id
@@ -27,6 +27,8 @@ public class Transaction {
 
     @Column(nullable = false)
     private LocalDateTime timeStamp;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal currentBalance;
 
     @Column(nullable = false)
     private int targetAccount;
@@ -36,24 +38,36 @@ public class Transaction {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId", nullable = false)
-    @JsonIgnoreProperties({"password"})
+    @JsonIgnoreProperties({ "password" })
     private User user;
 
     public Transaction() {
     }
 
-    public Transaction(Long id, TransactionType transactionType, BigDecimal amount, String description, LocalDateTime timeStamp, int targetAccount, BigDecimal resultBalance, User user) {
+    public Transaction(Long id, TransactionType transactionType, BigDecimal amount, String description,
+            LocalDateTime timeStamp, BigDecimal currentBalance, int targetAccount, User user) {
         this.id = id;
         this.transactionType = transactionType;
         this.amount = amount;
         this.description = description;
         this.timeStamp = timeStamp;
+        this.currentBalance = currentBalance;
         this.targetAccount = targetAccount;
         this.resultBalance = resultBalance;
         this.user = user;
     }
 
-    public Long getId() { return id; }
+    public BigDecimal getCurentBalance() {
+        return currentBalance;
+    }
+
+    public void setCurentBalance(BigDecimal curentBalance) {
+        this.currentBalance = curentBalance;
+    }
+
+    public Long getId() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -99,9 +113,13 @@ public class Transaction {
         this.targetAccount = targetAccount;
     }
 
-    public BigDecimal getResultBalance() { return resultBalance; }
+    public BigDecimal getResultBalance() {
+        return resultBalance;
+    }
 
-    public void setResultBalance(BigDecimal resultBalance) { this.resultBalance = resultBalance; }
+    public void setResultBalance(BigDecimal resultBalance) {
+        this.resultBalance = resultBalance;
+    }
 
     public User getUser() {
         return user;
@@ -115,15 +133,20 @@ public class Transaction {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Transaction transaction = (Transaction) o;
-        return id == transaction.id && targetAccount == transaction.targetAccount && transactionType == transaction.transactionType && amount.equals(transaction.amount) && description.equals(transaction.description) && timeStamp.equals(transaction.timeStamp) && resultBalance.equals(transaction.resultBalance) && user.equals(transaction.user);
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Transaction that = (Transaction) o;
+        return targetAccount == that.targetAccount && Objects.equals(id, that.id)
+                && transactionType == that.transactionType && Objects.equals(amount, that.amount)
+                && Objects.equals(description, that.description) && Objects.equals(timeStamp, that.timeStamp)
+                && Objects.equals(currentBalance, that.currentBalance) && Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, transactionType, amount, description, timeStamp, targetAccount, resultBalance, user);
+        return Objects.hash(id, transactionType, amount, description, timeStamp, currentBalance, targetAccount, user);
     }
 
     @Override
@@ -134,10 +157,9 @@ public class Transaction {
                 ", amount=" + amount +
                 ", description='" + description + '\'' +
                 ", timeStamp=" + timeStamp +
+                ", currentBalance=" + currentBalance +
                 ", targetAccount=" + targetAccount +
-                ", resultBalance=" + resultBalance +
-                ", user=" + user.getUsername() +
+                ", user=" + user +
                 '}';
     }
-
 }

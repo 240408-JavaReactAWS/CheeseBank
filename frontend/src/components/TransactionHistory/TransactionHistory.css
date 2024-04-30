@@ -12,7 +12,8 @@ h1 {
 }
 
 .description {
-    width: 350px;
+    width: 300px;
+    text-align: center;
 }
 
 .search-bar {
@@ -30,10 +31,16 @@ td {
     padding: 10px;
     align-items: center;
     align-content: center;
+    text-align: center;
+}
+
+tbody tr {
+    text-align: center;
 }
 
 tbody tr:nth-child(odd) {
     background-color: #f0f0f0;
+
 }
 
 tbody tr:nth-child(even) {
@@ -46,4 +53,8 @@ tbody tr:nth-child(even) {
     cursor: pointer;
     border-radius: 5px;
     background-color: #737879;
+}
+
+.p-button {
+    margin-right: 20px;
 }

@@ -1,13 +1,9 @@
-.dashboard {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 20px;
-  height: 100vh;
-  padding: 20px;
+.transaction {
+  margin: 50px 50px;
+  background-color: aliceblue;
 }
 
-.top {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+.dashboard-body {
+  background-image: linear-gradient(to right, #ce9717, #654700);
+
 }
