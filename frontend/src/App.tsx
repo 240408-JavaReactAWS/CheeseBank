@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { SessionProvider } from './context/SessionContext';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import Navbar from './components/Navbar/Navbar';
@@ -12,15 +13,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const App: React.FC = () => {
   return (
     <>
-    <Header />
-    <Navbar />
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/admin-dashboard" element={<AdminDashboard />} />
-    </Routes>
-    <Footer />
+      <SessionProvider>
+        <Header />
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        </Routes>
+        <Footer />
+      </SessionProvider>
     </>
   );
 }
