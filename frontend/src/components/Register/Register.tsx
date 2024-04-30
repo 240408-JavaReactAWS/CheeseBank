@@ -74,9 +74,9 @@ const Register: React.FC = () => {
         }, 2000);
       })
       .catch((err) => {
-        setError(err.response.data.message);
+        setError(err.response.data);
       });
-  };
+    };
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -130,9 +130,7 @@ const Register: React.FC = () => {
           value={phone}
           onChange={handlePhoneChange} />
       </Form.Group>
-
       {error && <p className="text-danger">{error}</p>}
-
       <Button variant="primary" type="submit">
         Create account
       </Button>
