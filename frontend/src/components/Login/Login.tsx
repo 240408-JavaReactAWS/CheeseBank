@@ -1,12 +1,10 @@
 import React, { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSession } from '../../context/SessionContext';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 import './Login.css';
 
 const Login: React.FC = () => {
-  // const { sessionUser, login } = useSession();
   const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
@@ -22,7 +20,6 @@ const Login: React.FC = () => {
       });
 
       if (response.status === 200) {
-        // login(username);
         navigate('/dashboard');
         console.log('Login successful');
       }
