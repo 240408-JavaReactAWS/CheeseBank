@@ -1,0 +1,21 @@
+.header {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: #FFED7B;
+    /* background-image: url('/images/cheese.avif'); */
+    color: Black;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.title {
+    font-size: 2em;
+    font-family: fantasy;
+  }
+  
+  .subtitle {
+    font-size: 1em;
+    font-family: Arial, Helvetica, serif;
+  }
