@@ -14,6 +14,20 @@
   justify-content: center;
 }
 
+.Profile .profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  gap: 20px; /* adjust as needed */
+  height: 100%;
+  width: 100%;
+}
+
+.Profile .profile-greeting {
+  font-size: 32px;
+  font-weight: 600;
+}
+
 .Profile div {
   justify-content: center;
   margin-top: 25px;
@@ -23,7 +37,7 @@
 
 .Profile button {
   margin-top: 25px;
-  width: 150px;
+  width: 120px;
   height: 60px;
   background-color: #f9a826;
   border: none;

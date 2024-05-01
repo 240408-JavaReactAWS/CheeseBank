@@ -61,7 +61,7 @@ const Profile: React.FC = () => {
 
   return (
     <div className="profile-box">
-      <Card style={{ width: '44rem' }}>
+      <Card className="profile-card" style={{ width: '25rem' }}>
         <Card.Body>
           <Card.Title>Hello {sessionUser?.firstName}!</Card.Title>
           <Card.Text>
