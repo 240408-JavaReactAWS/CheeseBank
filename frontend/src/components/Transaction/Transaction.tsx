@@ -74,7 +74,9 @@ function Transaction({ updateTransactionHistory }: { updateTransactionHistory: (
             }, {
                 withCredentials: true
             });
-            if (response.status === 201) {
+            if (response.status === 201 || response.status === 200) {
+                 const updatedUser = response.data.user; 
+            setUser(updatedUser); 
                 alert("Transaction successful!");
                 updateTransactionHistory();
             } else {
@@ -99,6 +101,8 @@ function Transaction({ updateTransactionHistory }: { updateTransactionHistory: (
                 withCredentials: true
             });
             if (response.status === 200 || response.status === 201) {
+                 const updatedUser = response.data.user; // Assuming the response contains updated user data
+            setUser(updatedUser); 
                 alert("Transaction successful!");
                 // Call the function to update transaction history
                 updateTransactionHistory();
