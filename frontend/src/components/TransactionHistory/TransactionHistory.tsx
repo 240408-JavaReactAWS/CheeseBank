@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Transaction } from '../../models/Transaction';
 import { useSession } from '../../context/SessionContext';
 import { Container, Table, Form, Button } from 'react-bootstrap';
+import './TransactionHistory.css';
 
 interface ResponseData {
   content: Transaction[];
@@ -69,6 +70,15 @@ const TransactionHistory: React.FC = () => {
     search(searchValue);
   };
 
+
+  const handleStartDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setStartDateFilter(e.target.value);
+  }
+
+  const handleEndDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setEndDateFilter(e.target.value);
+  }
+
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -78,17 +88,19 @@ const TransactionHistory: React.FC = () => {
   : [];
 
   return (
-    <Container>
+    <Container className="transaction-history">
       <h2>Transaction History</h2>
       <Form.Control
         type="text"
         value={searchText}
         onChange={handleSearchInputChange}
         placeholder="Search by description..."
+        className="form-control"
       />
       <Form.Select
         value={typeFilter}
         onChange={(e) => setTypeFilter(e.target.value)}
+        className="form-select"
       >
         <option value="">Filter by Type</option>
         <option value="WITHDRAWAL">Withdrawals</option>
@@ -96,20 +108,22 @@ const TransactionHistory: React.FC = () => {
         <option value="TRANSFER">Transfers</option>
         <option value="RECEIVE">Received</option>
       </Form.Select>
-      <span>From</span>
-      <Form.Control
-        type="date"
-        value={startDateFilter}
-        onChange={(e) => setStartDateFilter(e.target.value)}
-        placeholder="From"
-      />
-      <span>To</span>
-      <Form.Control
-        type="date"
-        value={endDateFilter}
-        onChange={(e) => setEndDateFilter(e.target.value)}
-        placeholder="To"
-      />
+      <div className="date-range">
+        <span>From:</span>
+        <Form.Control
+          type="date"
+          value={startDateFilter}
+          onChange={handleStartDateChange}
+          className="form-control"
+        />
+        <span>To:</span>
+        <Form.Control
+          type="date"
+          value={endDateFilter}
+          onChange={handleEndDateChange}
+          className="form-control"
+        />
+      </div>
 
       {loading && <p>Loading...</p>}
       {error && <p>Error fetching data</p>}
@@ -135,19 +149,21 @@ const TransactionHistory: React.FC = () => {
           ))}
         </tbody>
       </Table>
-      <Button onClick={() => paginate(1)} disabled={currentPage === 1}>
-        &lt;&lt;
-      </Button>
-      <Button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
-        &lt;
-      </Button>
-      <span>     {currentPage}     </span>
-      <Button onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil((filteredTransactions?.length || 0) / transactionsPerPage) || transactionsToDisplay.length === 0}>
-        &gt;
-      </Button>
-      <Button onClick={() => paginate(Math.ceil((filteredTransactions?.length || 0) / transactionsPerPage))} disabled={transactionsToDisplay.length === 0}>
-        &gt;&gt;
-      </Button>
+      <div className="pagination-buttons">
+        <Button onClick={() => paginate(1)} disabled={currentPage === 1}>
+          &lt;&lt;
+        </Button>
+        <Button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+          &lt;
+        </Button>
+        <span>     {currentPage}     </span>
+        <Button onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil((filteredTransactions?.length || 0) / transactionsPerPage) || transactionsToDisplay.length === 0}>
+          &gt;
+        </Button>
+        <Button onClick={() => paginate(Math.ceil((filteredTransactions?.length || 0) / transactionsPerPage))} disabled={transactionsToDisplay.length === 0}>
+          &gt;&gt;
+        </Button>
+      </div>
     </Container>
   );
 }

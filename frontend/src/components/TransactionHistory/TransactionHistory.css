@@ -11,8 +11,20 @@ h1 {
     background: linear-gradient(to bottom right, #f3f3f3, #dadada);
 }
 
+.transaction-history .form-control {
+    width: 5000%; /* adjust as needed */
+    margin: 10px auto;
+    display: flex;
+    align-items : flex-start;
+}
+
+.transaction-history .form-select {
+  width: 500%; /* adjust as needed */
+  margin: 10px auto;
+}
+
 .description {
-    width: 300px;
+    width: 100%;
     text-align: center;
 }
 
@@ -20,8 +32,30 @@ h1 {
     margin: 1px;
     padding: 10px;
     border-radius: 5px;
+    width: 500px;
 
 }
+
+.date-range {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* adjust as needed */
+  }
+
+span{
+    font-size: 14px;
+    padding: 10px;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+}
+
+.pagination-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+
+  }
 
 th,
 td {
@@ -49,14 +83,6 @@ tbody tr:nth-child(even) {
     background-color: #c6ced1;
 }
 
-.download-btn {
-    padding: 5px 10px;
-    font-size: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    background-color: #737879;
-}
-
-.p-button {
-    margin-right: 20px;
+tbody tr:hover {
+    background-color: #f0f0f0;
 }

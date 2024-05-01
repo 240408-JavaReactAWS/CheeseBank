@@ -45,28 +45,28 @@ const Login: React.FC = () => {
   }
 
   return (
-    <Form>
+    <Form className="login-form">
       <Form.Group controlId="username">
-        <Form.Label>Username:</Form.Label>
+        <Form.Label>Username</Form.Label>
         <Form.Control
           type="text"
-          placeholder="Username"
+          placeholder=""
           value={username}
           onChange={handleUsernameInput}
         />
       </Form.Group>
 
       <Form.Group controlId="password">
-        <Form.Label>Password:</Form.Label>
+        <Form.Label>Password</Form.Label>
         <Form.Control
           type="password"
-          placeholder="Password"
+          placeholder=""
           value={password}
           onChange={handlePasswordInput}
         />
       </Form.Group>
 
-      <Button variant="primary" onClick={handleLogin}>
+      <Button variant="primary" onClick={handleLogin} className="btn">
         Login
       </Button>
     </Form>

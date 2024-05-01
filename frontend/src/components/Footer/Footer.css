@@ -1,10 +1,39 @@
 .footer {
-        position: relative;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        background-color: #FFED7B;
-        color: black;
-        text-align: center;
-        padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #FFED7B;
+  color: black;
+  padding: 5px 0;
+}
+
+.footer .slogan {
+  order: -1;
+  text-align: center;
+}
+
+.footer .logout-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.footer .logout-section a {
+  margin-right: 10px;
+}
+
+.footer .logout-section a,
+.footer .logout-section .signout-icon {
+  color: black;
+}
+
+.footer .logout-section a:hover,
+.footer .logout-section .signout-icon:hover {
+  color: orangered;
 }

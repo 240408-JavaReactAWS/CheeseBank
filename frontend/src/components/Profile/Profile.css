@@ -1,0 +1,38 @@
+/* increase height of profile component*/
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; /* adjust as needed */
+  height: 100%;
+  width: 100%;
+}
+
+.profile-container .profile-card {
+  flex: 1;
+  justify-content: center;
+}
+
+.Profile div {
+  justify-content: center;
+  margin-top: 25px;
+  align-items: center;
+
+}
+
+.Profile button {
+  margin-top: 25px;
+  width: 150px;
+  height: 60px;
+  background-color: #f9a826;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.Profile button:hover {
+  background-color: #f9a826;
+}

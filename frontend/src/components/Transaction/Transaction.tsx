@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Form, InputGroup, ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
+import './Transaction.css';
 
 const Transaction: React.FC = () => {
   const [transactionType, setTransactionType] = useState('');
@@ -71,9 +72,9 @@ const Transaction: React.FC = () => {
   return (
     <section className="transaction-body">
       <ToggleButtonGroup type="radio" name="transaction-type" defaultValue={transactionType} onChange={handleTransactionTypeChange}>
-        <ToggleButton id="toggle-deposit" value="deposit">Deposit</ToggleButton>
-        <ToggleButton id="toggle-withdrawal" value="withdrawal">Withdraw</ToggleButton>
-        <ToggleButton id="toggle-transfer" value="transfer">Transfer</ToggleButton>
+        <ToggleButton id="toggle-deposit" value="deposit" className="btn">Deposit</ToggleButton>
+        <ToggleButton id="toggle-withdrawal" value="withdrawal" className="btn">Withdraw</ToggleButton>
+        <ToggleButton id="toggle-transfer" value="transfer" className="btn">Transfer</ToggleButton>
       </ToggleButtonGroup>
 
       <Form onSubmit={handleSubmit}>
@@ -94,7 +95,7 @@ const Transaction: React.FC = () => {
             <Form.Control type="text" value={targetAccount} onChange={handleRecipientChange} placeholder="Account Number" />
           </Form.Group>
         )}
-        <Button variant="primary" type="submit">
+        <Button variant="primary" type="submit" className="btn">
           Submit
         </Button>
         <p className="recipient-error">{error}</p>

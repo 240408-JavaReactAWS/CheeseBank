@@ -6,9 +6,25 @@
     justify-content: center;
     padding: 20px;
     border-radius: 5px;
-    background-color: #2d557e;
+    background-color: #e5e589;
     margin-top: 40px;
 
+}
+
+.transaction-body .btn {
+    background-color: rgb(222, 224, 183);
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.transaction-body .btn-primary[type="submit"] {
+  margin: auto;
+  margin-top: 30px;
+  padding-bottom: 30px;
+  display: block;
 }
 
 .input-container {
@@ -27,27 +43,6 @@
 
 }
 
-/* Deposit button */
-.depositTransaction {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-}
-
-/* Withdrawal button */
-.withdrawalTransaction {
-    background-color: #f44336;
-    color: white;
-    border: none;
-}
-
-/* Transfer button */
-.transferTransaction {
-    background-color: #008cba;
-    color: white;
-    border: none;
-}
-
 /* Input styles */
 input {
     padding: 8px;
@@ -58,6 +53,10 @@ input {
     max-width: 400px;
     margin-bottom: 20px;
 }
+
+.transaction-body .form-group .input-group-text {
+    height: auto; /* make the height the same as the input line */
+  }
 
 /* Add space between inputs */
 input:not(:last-child) {
@@ -81,77 +80,4 @@ input:not(:last-child) {
     to {
         transform: scale(1.1);
     }
-}
-
-
-.balance-container {
-    border: 1px solid #122a6d;
-    border-radius: 5px;
-    padding: 10px;
-    background-color: #f8f9fa;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-
-
-
-
-}
-
-.travel-container,
-.reward-container {
-    border: 1px solid #122a6d;
-    border-radius: 5px;
-    padding: 10px;
-    background-color: #f8f9fa;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-.reward-container h4,
-.travel-container h4 {
-    color: #122a6d;
-    font-size: 20px;
-
-
-}
-
-.reward-container p,
-.travel-container p {
-    color: #071554;
-    font-size: 12px;
-
-}
-
-
-
-.reward-container .btn {
-    font-size: 10px;
-    color: rgb(255, 255, 255);
-    background-color: #173cde;
-
-}
-
-.balance-inner-container p {
-    font-size: 12px;
-    font-family: Georgia, 'Times New Roman', Times, serif
-}
-
-.creditcard-container h4,
-.balance-inner-container h4 {
-    font-size: 20px;
-    color: #1d19f8;
-    font-family: Georgia, 'Times New Roman', Times, serif
-}
-
-
-.creditcard-container p {
-    font-size: 12px;
-    font-weight: 800;
-    font-family: Georgia, 'Times New Roman', Times, serif
-}
-
-.creditcard-container .btn {
-    font-size: 10px;
-    color: rgb(255, 255, 255);
-    background-color: #173cde;
-    margin-bottom: 20px;
-
 }

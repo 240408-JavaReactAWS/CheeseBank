@@ -3,7 +3,7 @@ import { SessionProvider } from './context/SessionContext';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
-import Navbar from './components/Navbar/Navbar';
+import NavigationBar from './components/NavigationBar/NavigationBar';
 import ResetPassword from './components/ResetPassword/ResetPassword';
 import AboutUs from './components/AboutUs/AboutUs';
 import Locations from './components/Locations/Locations';
@@ -18,7 +18,7 @@ const App: React.FC = () => {
     <>
       <SessionProvider>
         <Header />
-        <Navbar />
+        <NavigationBar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/reset-password" element={<ResetPassword />} />

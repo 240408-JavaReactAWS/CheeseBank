@@ -20,11 +20,19 @@ const Dashboard: React.FC = () => {
   return (
     <div className="dashboard">
       <div className="top">
-        <Profile />
-        <Balance />
+        <div className="Profile">
+          <Profile />
+        </div>
+        <div className="Balance">
+          <Balance />
+        </div>
       </div>
-      <Transaction />
-      <TransactionHistory />
+      <div className="Transaction">
+        <Transaction />
+      </div>
+      <div className="TransactionHistory">
+        <TransactionHistory />
+      </div>
     </div>
   );
 };

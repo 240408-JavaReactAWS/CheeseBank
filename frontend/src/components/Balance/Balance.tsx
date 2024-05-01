@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
 import { FaGift, FaPlane } from 'react-icons/fa';
 import { useSession } from '../../context/SessionContext';
 import axios from 'axios';
+import './Balance.css';
 
 function Balance() {
   const { sessionUser, login } = useSession();
@@ -28,9 +29,9 @@ function Balance() {
   }
 
   return (
-    <Container>
+    <Container className="balance-container">
       <Row>
-        <Col lg={3} className='mt-3 pt-2'>
+        <Col lg={3} className='balance-card mt-3 pt-2'>
           <Card>
             <Card.Body>
               <Card.Title>Checking Account <em>({userId})</em></Card.Title>
@@ -53,7 +54,7 @@ function Balance() {
             </Card.Body>
           </Card>
         </Col>
-        <Col lg={3} className='mt-3 pt-2'>
+        <Col lg={3} className='side-cards mt-3 pt-2'>
           <Card>
             <Card.Body>
               <Card.Title>Rewards <FaGift /></Card.Title>
@@ -63,7 +64,7 @@ function Balance() {
             </Card.Body>
           </Card>
         </Col>
-        <Col lg={3} className='mt-3 pt-2'>
+        <Col lg={3} className='side-cards mt-3 pt-2'>
           <Card>
             <Card.Body>
               <Card.Title>Travel <FaPlane /></Card.Title>

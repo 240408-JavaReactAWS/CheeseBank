@@ -1,0 +1,38 @@
+/* .login-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 33%;
+  padding: 20px;
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
+  background-color: white;
+}
+
+.login-form .form-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.login-form .form-group .form-label {
+  margin-right: 10px;
+}
+
+.login-form .btn {
+  border: 1px solid #000;
+  color: #000;
+  background-color: white;
+  float: right;
+  line-height: 1;
+  margin-top: 20px;
+}
+
+.login-form .btn:hover {
+  background-color: yellow;
+}
+
+.login-form .btn:active {
+  background-color: orangered;
+} */

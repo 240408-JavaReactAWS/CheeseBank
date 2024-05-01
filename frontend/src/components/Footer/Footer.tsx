@@ -1,8 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
 import { useSession } from '../../context/SessionContext';
-import { FaGithub } from 'react-icons/fa';
+import { FaGithub, FaSignOutAlt } from 'react-icons/fa';
 import './Footer.css';
 
 const Footer: React.FC = () => {
@@ -17,11 +16,13 @@ const Footer: React.FC = () => {
 
   return (
     <div className="footer">
-      <p>For all of your delicious banking needs.</p>
-      <a href="https://github.com/240408-JavaReactAWS/CheeseBank/" target="_blank" rel="noopener noreferrer">
-        <FaGithub size={32} />
-      </a>
-      <Button variant="outline-primary" onClick={handleLogout}>Sign out</Button>
+      <p className="slogan">For all of your delicious banking needs</p>
+      <div className="logout-section">
+        <a href="https://github.com/240408-JavaReactAWS/CheeseBank/" target="_blank" rel="noopener noreferrer">
+          <FaGithub size={32} />
+        </a>
+        <FaSignOutAlt className="signout-icon" size={32} onClick={handleLogout} />
+      </div>
     </div>
   );
 }
