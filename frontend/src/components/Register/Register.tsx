@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
+import './Register.css';
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ const Register: React.FC = () => {
       phone
     };
 
-    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/register`, dataToSend)
+    axios.post(`http://localhost:8080/api/users/register`, dataToSend)
       .then(() => {
         console.log('User created successfully');
         setFormData({
@@ -70,7 +71,7 @@ const Register: React.FC = () => {
         setConfirmPassword('');
         setPhone('');
         setTimeout(() => {
-          navigate('/');
+          navigate('/login');
         }, 2000);
       })
       .catch((err) => {
@@ -79,6 +80,7 @@ const Register: React.FC = () => {
     };
 
   return (
+    <div className='form-container mt-5 mb-5' >
     <Form onSubmit={handleSubmit}>
       <Form.Group controlId="firstName">
         <Form.Label>First Name</Form.Label>
@@ -135,6 +137,7 @@ const Register: React.FC = () => {
         Create account
       </Button>
     </Form>
+    </div>
   );
 };
 

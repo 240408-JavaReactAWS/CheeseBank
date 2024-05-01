@@ -1,0 +1,34 @@
+/* Login.css */
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #cd9b36;
+    margin-bottom: 230px;
+}
+
+.login-form {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+.form-control {
+    margin-bottom: 10px;
+}
+
+.login-button {
+    width: 100%;
+}
+
+
+a {
+    font-size: 12px;
+    text-align: center;
+}

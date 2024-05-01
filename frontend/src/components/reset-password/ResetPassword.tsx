@@ -47,14 +47,14 @@ function ResetPassword() {
         return;
     }
 
-        axios.post(`http://localhost:8080/api/v1/user/reset-password`,{
+        axios.post(`http://localhost:8080/api/users/reset-password`,{
             token: token,
             password: password
         })
                 .then((response) => {
                     if(password === confirmPassword && response.status === 200){
                         alert("Password reset successful");
-                        navigate('/');
+                        navigate('/login');
                     }
 
                     })

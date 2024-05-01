@@ -87,5 +87,10 @@ public class EmailService {
         String text = "Dear "+ user.getFirstName() +","+ "\n\nYour account has been frozen. Please contact customer service for more information.\n\nCheese Bank";
         sendEmail(user.getEmail(), subject, text);
     }
+    public void sendPasswordResetEmail(User user) {
+        String subject = "Password Reset";
+        String text = "Dear "+ user.getFirstName() +","+ "\n\n\n\nPlease click the link to reset your password: http://localhost:3000/reset-password?token=" + user.getToken() + "\n\nCheese Bank";
+        sendEmail(user.getEmail(), subject, text);
+    }
 
 }

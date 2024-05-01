@@ -1,0 +1,26 @@
+.form-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #f7ca69;
+}
+
+.form-container form {
+    margin-bottom: 0;
+}
+
+.form-container label {
+    font-weight: bold;
+}
+
+.form-container .form-group {
+    margin-bottom: 20px;
+}
+
+.form-container .text-danger {
+    margin-top: 10px;
+    color: #ff0000;
+}

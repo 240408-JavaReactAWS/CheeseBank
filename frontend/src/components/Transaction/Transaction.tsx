@@ -144,7 +144,7 @@ function Transaction({ updateTransactionHistory }: { updateTransactionHistory: (
                 <div className='col-lg-6'>
                     <div className='transaction-body'>
                         <div className='transaction-btn'>
-                            <button className='btn btn-success mr-2' onClick={handleDepositClick}>Deposit</button>
+                            <button className='btn btn-success mr-2 ' onClick={handleDepositClick}>Deposit</button>
                             <button className='btn btn-danger mr-2' onClick={handleWithdrawClick}>Withdraw</button>
                             <button className='btn btn-primary' onClick={handleTransferClick}>Transfer</button>
                         </div>
