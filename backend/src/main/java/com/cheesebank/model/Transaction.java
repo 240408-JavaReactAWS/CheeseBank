@@ -27,115 +27,84 @@ public class Transaction {
 
     @Column(nullable = false)
     private LocalDateTime timeStamp;
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal currentBalance;
 
     @Column(nullable = false)
     private int targetAccount;
 
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal resultBalance;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId", nullable = false)
-    @JsonIgnoreProperties({ "password" })
+    @JsonIgnoreProperties({"password"})
     private User user;
 
     public Transaction() {
     }
 
-    public Transaction(Long id, TransactionType transactionType, BigDecimal amount, String description,
-            LocalDateTime timeStamp, BigDecimal currentBalance, int targetAccount, User user) {
+    public Transaction(Long id, TransactionType transactionType, BigDecimal amount, String description, LocalDateTime timeStamp, int targetAccount, BigDecimal resultBalance, User user) {
         this.id = id;
         this.transactionType = transactionType;
         this.amount = amount;
         this.description = description;
         this.timeStamp = timeStamp;
         this.targetAccount = targetAccount;
-        this.currentBalance = currentBalance;
+        this.resultBalance = resultBalance;
         this.user = user;
     }
 
-    public BigDecimal getCurentBalance() {
-        return currentBalance;
-    }
+    public Long getId() { return id; }
 
-    public void setCurentBalance(BigDecimal curentBalance) {
-        this.currentBalance = curentBalance;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getId() {
-        return id;
-    }
+    public TransactionType getTransactionType() { return transactionType; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setTransactionType(TransactionType transactionType) { this.transactionType = transactionType; }
 
-    public TransactionType getTransactionType() {
-        return transactionType;
-    }
+    public BigDecimal getAmount() { return amount; }
 
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
+    public String getDescription() { return description; }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
+    public void setDescription(String description) { this.description = description; }
 
-    public String getDescription() {
-        return description;
-    }
+    public LocalDateTime getTimeStamp() { return timeStamp; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setTimeStamp(LocalDateTime timeStamp) { this.timeStamp = timeStamp; }
 
-    public LocalDateTime getTimeStamp() {
-        return timeStamp;
-    }
+    public int getTargetAccount() { return targetAccount; }
 
-    public void setTimeStamp(LocalDateTime timeStamp) {
-        this.timeStamp = timeStamp;
-    }
+    public void setTargetAccount(int targetAccount) { this.targetAccount = targetAccount; }
 
-    public int getTargetAccount() {
-        return targetAccount;
-    }
+    public BigDecimal getResultBalance() { return resultBalance; }
 
-    public void setTargetAccount(int targetAccount) {
-        this.targetAccount = targetAccount;
-    }
+    public void setResultBalance(BigDecimal resultBalance) { this.resultBalance = resultBalance; }
 
+    public User getUser() { return user; }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public void setUser(User user) { this.user = user; }
 
     // Helper Methods
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        Transaction that = (Transaction) o;
-        return targetAccount == that.targetAccount && Objects.equals(id, that.id)
-                && transactionType == that.transactionType && Objects.equals(amount, that.amount)
-                && Objects.equals(description, that.description) && Objects.equals(timeStamp, that.timeStamp)
-                && Objects.equals(currentBalance, that.currentBalance) && Objects.equals(user, that.user);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transaction transaction = (Transaction) o;
+        return id == transaction.id
+                && targetAccount == transaction.targetAccount
+                && transactionType == transaction.transactionType
+                && amount.equals(transaction.amount)
+                && description.equals(transaction.description)
+                && timeStamp.equals(transaction.timeStamp)
+                && resultBalance.equals(transaction.resultBalance)
+                && user.equals(transaction.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, transactionType, amount, description, timeStamp, currentBalance, targetAccount, user);
+        return Objects.hash(id, transactionType, amount, description, timeStamp, targetAccount, resultBalance, user);
     }
 
     @Override
@@ -146,9 +115,10 @@ public class Transaction {
                 ", amount=" + amount +
                 ", description='" + description + '\'' +
                 ", timeStamp=" + timeStamp +
-                ", currentBalance=" + currentBalance +
                 ", targetAccount=" + targetAccount +
-                ", user=" + user +
+                ", resultBalance=" + resultBalance +
+                ", user=" + user.getUsername() +
                 '}';
     }
+
 }

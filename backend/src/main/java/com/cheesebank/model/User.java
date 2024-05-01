@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-@Table(name="users")
+@Table(name= "users")
 public class User {
 
     @Id
@@ -66,93 +66,49 @@ public class User {
         this.token = null;
     }
 
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setId(int id) { this.id = id; }
 
-    public String getUsername() {
-        return username;
-    }
+    public String getUsername() { return username; }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public void setUsername(String username) { this.username = username; }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getPassword() { return password; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public void setPassword(String password) { this.password = password; }
 
-    public String getFirstName() {
-        return firstName;
-    }
+    public String getFirstName() { return firstName; }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    public String getLastName() {
-        return lastName;
-    }
+    public String getLastName() { return lastName; }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getEmail() { return email; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public void setEmail(String email) { this.email = email; }
 
-    public LocalDate getDob() {
-        return dob;
-    }
+    public LocalDate getDob() { return dob; }
 
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
-    }
+    public void setDob(LocalDate dob) { this.dob = dob; }
 
-    public String getPhone() {
-        return phone;
-    }
+    public String getPhone() { return phone; }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+    public void setPhone(String phone) { this.phone = phone; }
 
-    public BigDecimal getBalance() {
-        return balance;
-    }
+    public BigDecimal getBalance() { return balance; }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
+    public void setBalance(BigDecimal balance) { this.balance = balance; }
 
-    public UserType getUserType() {
-        return userType;
-    }
+    public UserType getUserType() { return userType; }
 
-    public void setUserType(UserType userType) {
-        this.userType = userType;
-    }
+    public void setUserType(UserType userType) { this.userType = userType; }
 
-    public Boolean getFrozen() {
-        return isFrozen;
-    }
+    public Boolean getFrozen() { return isFrozen; }
 
-    public void setFrozen(Boolean frozen) {
-        isFrozen = frozen;
-    }
+    public void setFrozen(Boolean frozen) { isFrozen = frozen; }
 
     public String getToken() { return token; }
 
@@ -165,7 +121,18 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && username.equals(user.username) && password.equals(user.password) && firstName.equals(user.firstName) && lastName.equals(user.lastName) && email.equals(user.email) && dob.equals(user.dob) && phone.equals(user.phone) && balance.equals(user.balance) && userType == user.userType && isFrozen.equals(user.isFrozen) && token.equals(user.token);
+        return id == user.id
+                && username.equals(user.username)
+                && password.equals(user.password)
+                && firstName.equals(user.firstName)
+                && lastName.equals(user.lastName)
+                && email.equals(user.email)
+                && dob.equals(user.dob)
+                && phone.equals(user.phone)
+                && balance.equals(user.balance)
+                && userType == user.userType
+                && isFrozen.equals(user.isFrozen)
+                && token.equals(user.token);
     }
 
     @Override

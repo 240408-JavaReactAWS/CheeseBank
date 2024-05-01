@@ -56,6 +56,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
-
+    @ExceptionHandler(InvalidTransferRecipientException.class)
+    public ResponseEntity<String> handleInvalidTransferRecipientException(InvalidTransferRecipientException e) {
+        System.out.println("Invalid transfer recipient");
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
 }

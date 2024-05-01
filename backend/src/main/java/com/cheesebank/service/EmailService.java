@@ -30,61 +30,44 @@ public class EmailService {
     }
 
     public void sendTransactionEmail(User user, Transaction transaction) {
-        String subject = "Transaction Notification";
-        String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nA transaction has been made on your account. \n\nDetails:\n" + "Transaction Type: " + transaction.getTransactionType() + "\nAmount: " + transaction.getAmount() + "\nDescription: " + transaction.getDescription() + "\nTime Stamp: " + transaction.getTimeStamp() + "\nTarget Account: " + transaction.getTargetAccount() + "\nResult Balance: " + transaction.getTransactionType() + "\nTransaction Amount: " + transaction.getAmount() + "\nDescription: " + transaction.getDescription() + "\nTime Stamp: " + transaction.getTimeStamp() + "\nTarget Account: " + transaction.getTargetAccount() + "\nDescription: " + transaction.getDescription();
+        String subject = "Cheese Bank - Recent Transaction";
+        String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nA transaction has been made on your account. \n\n-----------------------------\nDetails:\n" + "Transaction Type: " + transaction.getTransactionType() + "\nAmount: " + transaction.getAmount() + "\nDescription: " + transaction.getDescription() + "\nTime Stamp: " + transaction.getTimeStamp() + "\nTarget Account: " + transaction.getTargetAccount() + "\nResult Balance: " + transaction.getTransactionType() + "\nTransaction Amount: " + transaction.getAmount() + "\nDescription: " + transaction.getDescription() + "\nTime Stamp: " + transaction.getTimeStamp() + "\nTarget Account: " + transaction.getTargetAccount() + "\nDescription: " + transaction.getDescription() + "\n-----------------------------\n\nIf this transaction does not seem familiar to you, please contact Customer Support immediately.\n\nCheese Bank";
         sendEmail(user.getEmail(), subject, text);
     }
 
     public void sendAccountUpdateEmail(User user) {
-        String subject = "Account Update Notification";
-        String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nYour account information has been updated.";
+        String subject = "Cheese Bank - Account Information Updated";
+        String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nYour account information has been updated.\n\nCheese Bank";
         sendEmail(user.getEmail(), subject, text);
     }
 
     public void sendPasswordChangeEmail(User user) {
-        String subject = "Password Change Notification";
-        String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nYour password has been changed.";
+        String subject = "Cheese Bank - Password Change";
+        String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nYour password has been changed. Please contact Customer Support if this was not intended.\n\nCheese Bank";
         sendEmail(user.getEmail(), subject, text);
     }
 
-    public void sendInsufficientBalanceEmail(User user, BigDecimal amount) {
-        String subject = "Insufficient Balance";
-        String text = "Dear "+ user.getFirstName() +","+ "\n\nYou cannot withdraw or transfer $" + amount + " due to insufficient funds.\n\nCheese Bank";
+    public void sendInsufficientBalanceEmail(User user, Transaction transaction) {
+        String subject = "Cheese Bank - Insufficient Balance";
+        String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nYour recent withdrawal or transfer of $" + transaction.getAmount() + " was canceled due to insufficient funds. Deposit money as soon as possible to avoid this issue.\n\nCheese Bank";
         sendEmail(user.getEmail(), subject, text);
     }
 
-    public void sendTransferEmailToSender(User user, BigDecimal amount, String emailTo) {
-        String subject = "Transfer Notification";
-        String text = "Dear "+ user.getFirstName() +","+ "\n\nYou have successfully transferred $" + amount + " to " + emailTo + ".\n\nCheese Bank";
-        sendEmail(user.getEmail(), subject, text);
-    }
-
-    public void sendTransferEmailToReceiver(User user, BigDecimal amount, String emailFrom) {
-        String subject = "Transfer Notification";
-        String text = "Dear "+ user.getFirstName() +","+ "\n\nYou have received a transfer of $" + amount + " from " + emailFrom + ".\n\nCheese Bank";
-        sendEmail(user.getEmail(), subject, text);
-    }
-
-    public void sendDepositEmail(User user, BigDecimal amount) {
-        String subject = "Deposit Notification";
-        String text = "Dear "+ user.getFirstName() +","+ "\n\nYou have successfully deposited $" + amount + " to your account.\n\nCheese Bank";
-        sendEmail(user.getEmail(), subject, text);
-    }
-    public void sendWithdrawEmail(User user, BigDecimal amount) {
-        String subject = "Withdraw Notification";
-        String text = "Dear "+ user.getFirstName() +","+ "\n\nYou have successfully withdrawn $" + amount + " from your account.\n\nCheese Bank";
-        sendEmail(user.getEmail(), subject, text);
+    public void sendTransferReceivedEmail(User senderUser, User recipientUser, Transaction transaction) {
+        String subject = "Cheese Bank - Transfer Notification";
+        String text = "Dear " + recipientUser.getFirstName() + " " + recipientUser.getLastName() + ",\n\nYou have received a transfer of $" + transaction.getAmount() + " from " + senderUser.getFirstName() + " " + senderUser.getLastName() + "with the description: \n" + transaction.getDescription() + ".\n\nCheese Bank";
+        sendEmail(recipientUser.getEmail(), subject, text);
     }
 
     public void sendLowBalanceEmail(User user) {
-        String subject = "Low Balance";
-        String text = "Dear "+ user.getFirstName() +","+ "\n\nYour account balance is low. Please deposit money to avoid any inconvenience.\n\nCheese Bank";
+        String subject = "Cheese Bank - Low Balance";
+        String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nWe wish to notify you that the balance in your bank account is less than $100, which is the specified amount for this alert.\n\nTo avoid possible fees, make sure you have enough funds in your account. Deposit money as soon as possible.\n\nCheese Bank";
         sendEmail(user.getEmail(), subject, text);
     }
 
     public void sendFrozenAccountEmail(User user) {
-        String subject = "Account Frozen";
-        String text = "Dear "+ user.getFirstName() +","+ "\n\nYour account has been frozen. Please contact customer service for more information.\n\nCheese Bank";
+        String subject = "Cheese Bank - Account Frozen";
+        String text = "Dear " + user.getFirstName() + " " + user.getLastName() + ",\n\nYour account has been frozen. Please contact Customer Support for more information.\n\nCheese Bank";
         sendEmail(user.getEmail(), subject, text);
     }
 
