@@ -2,8 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import {useNavigate, useLocation } from 'react-router-dom';
 import './ResetPassword.css';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
-import { set } from 'date-fns';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 function ResetPassword() {
     const location = useLocation();
@@ -57,15 +56,15 @@ function ResetPassword() {
                         alert("Password reset successful");
                         navigate('/');
                     }
-              
+
                     })
                 .catch((error) => {
                     alert("error occured. Please try again.");
                 console.log(error);
                     });
-   
- } 
-  
+
+ }
+
   return (
     <div className='reset-password-body'>
       <div className='password-input-container'>
