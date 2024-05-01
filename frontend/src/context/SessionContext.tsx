@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import axios from 'axios';
 
 interface SessionContextType {
   sessionUser: string | null;
@@ -13,19 +14,29 @@ interface Props {
 }
 
 export const SessionProvider: React.FC<Props> = ({ children }) => {
-  const [username, setUsername] = useState<string | null>(localStorage.getItem('username'));
+  const [username, setUsername] = useState<string | null>(null);
 
   const sessionUser = username;
 
   const login = (newUsername: string) => {
-    localStorage.setItem('username', newUsername);
     setUsername(newUsername);
   };
 
   const logout = () => {
-    localStorage.removeItem('username');
     setUsername(null);
   };
+
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users/session`)
+      .then(response => {
+        if (response.data) {
+          setUsername(response.data.username);
+        }
+      })
+      .catch(error => {
+        console.error('Error getting session:', error);
+      });
+  }, []);
 
   return (
     <SessionContext.Provider value={{ sessionUser, login, logout }}>

@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 import './Login.css';
+import { useSession } from '../../context/SessionContext'; // Update the path according to your project structure
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const { login } = useSession();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -20,6 +22,7 @@ const Login: React.FC = () => {
       });
 
       if (response.status === 200) {
+        login(username);
         navigate('/dashboard');
         console.log('Login successful');
       }
@@ -30,13 +33,11 @@ const Login: React.FC = () => {
 
   const handleUsernameInput = (event: ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
-
   }
 
   const handlePasswordInput = (event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   }
-
 
   return (
     <Form>
@@ -65,6 +66,6 @@ const Login: React.FC = () => {
       </Button>
     </Form>
   );
-};
+}
 
 export default Login;
