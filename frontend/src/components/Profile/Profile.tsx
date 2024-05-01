@@ -63,7 +63,7 @@ const Profile: React.FC = () => {
     <div className="profile-box">
       <Card className="profile-card" style={{ width: '25rem' }}>
         <Card.Body>
-          <Card.Title>Hello {sessionUser?.firstName}!</Card.Title>
+          <Card.Title className="profile-greeting">Hello {sessionUser?.firstName}!</Card.Title>
           <Card.Text>
             {sessionUser?.username}<br/>
             {sessionUser?.email}<br/>
