@@ -1,9 +1,10 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import axios from 'axios';
+import { User } from '../models/User'; // Adjust the import path according to your project structure
 
 interface SessionContextType {
-  sessionUser: string | null;
-  login: (sessionUser: string) => void;
+  sessionUser: User | null;
+  login: (sessionUser: User) => void;
   logout: () => void;
 }
 
@@ -14,23 +15,23 @@ interface Props {
 }
 
 export const SessionProvider: React.FC<Props> = ({ children }) => {
-  const [username, setUsername] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-  const sessionUser = username;
+  const sessionUser = user;
 
-  const login = (newUsername: string) => {
-    setUsername(newUsername);
+  const login = (newUser: User) => {
+    setUser(newUser);
   };
 
   const logout = () => {
-    setUsername(null);
+    setUser(null);
   };
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users/session`)
       .then(response => {
         if (response.data) {
-          setUsername(response.data.username);
+          setUser(response.data);
         }
       })
       .catch(error => {

@@ -106,9 +106,9 @@ public class User {
 
     public void setUserType(UserType userType) { this.userType = userType; }
 
-    public Boolean getFrozen() { return isFrozen; }
+    public Boolean getIsFrozen() { return isFrozen; }
 
-    public void setFrozen(Boolean frozen) { isFrozen = frozen; }
+    public void setIsFrozen(Boolean frozen) { isFrozen = frozen; }
 
     public String getToken() { return token; }
 

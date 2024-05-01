@@ -51,7 +51,7 @@ public class UserService {
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         newUser.setBalance(BigDecimal.ZERO);
         newUser.setUserType(UserType.USER);
-        newUser.setFrozen(false);
+        newUser.setIsFrozen(false);
         return userRepository.save(newUser);
     }
 
@@ -154,7 +154,7 @@ public class UserService {
         if (!existingUser.getUsername().equals(updatedUser.getUsername())) {
             Optional<User> possibleUser = userRepository.findByUsername(updatedUser.getUsername());
             if (possibleUser.isPresent()) {
-                throw new UsernameAlreadyTakenException("Username: " + updatedUser.getUsername() +" was already taken!");
+                throw new UsernameAlreadyTakenException("Username: " + updatedUser.getUsername() +" is already taken!");
             }
         }
         if (!existingUser.getEmail().equals(updatedUser.getEmail())) {
@@ -179,7 +179,7 @@ public class UserService {
         User existingUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        existingUser.setFrozen(!existingUser.getFrozen());
+        existingUser.setIsFrozen(!existingUser.getIsFrozen());
         return userRepository.save(existingUser);
     }
 
@@ -193,7 +193,7 @@ public class UserService {
         User existingUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        existingUser.setFrozen(!existingUser.getFrozen());
+        existingUser.setIsFrozen(!existingUser.getIsFrozen());
         return userRepository.save(existingUser);
     }
 

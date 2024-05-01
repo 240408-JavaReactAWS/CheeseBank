@@ -22,7 +22,7 @@ const Login: React.FC = () => {
       });
 
       if (response.status === 200) {
-        login(username);
+        login(response.data);
         navigate('/dashboard');
         console.log('Login successful');
       }

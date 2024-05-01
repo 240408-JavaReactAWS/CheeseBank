@@ -8,7 +8,7 @@ interface ResponseData {
   content: Transaction[];
 }
 
-function TransactionHistory() {
+const TransactionHistory: React.FC = () => {
   const { sessionUser } = useSession();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);

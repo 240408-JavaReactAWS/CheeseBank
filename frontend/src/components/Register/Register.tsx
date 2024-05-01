@@ -29,6 +29,9 @@ const Register: React.FC = () => {
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let input = e.target.value.replace(/\D/g, '');
+    if (input.length > 10) {
+      input = input.slice(0, 10);
+    }
     if (input.length > 3) {
       input = input.slice(0, 3) + '-' + input.slice(3);
     }

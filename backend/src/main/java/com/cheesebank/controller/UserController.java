@@ -57,7 +57,18 @@ public class UserController {
         User loggedInUser = userService.loginUser(user.getUsername(), user.getPassword());
         session.setAttribute("user", loggedInUser);
         System.out.println("User login successful");
-        return ResponseEntity.ok(new UserDTO(loggedInUser.getUsername(), loggedInUser.getUserType()));
+        return ResponseEntity.ok(new UserDTO(
+                loggedInUser.getId(),
+                loggedInUser.getUsername(),
+                loggedInUser.getFirstName(),
+                loggedInUser.getLastName(),
+                loggedInUser.getEmail(),
+                loggedInUser.getDob(),
+                loggedInUser.getPhone(),
+                loggedInUser.getBalance(),
+                loggedInUser.getUserType(),
+                loggedInUser.getIsFrozen()
+        ));
     }
 
     @GetMapping("/login")
@@ -188,13 +199,15 @@ public class UserController {
     public ResponseEntity<User> updateUser(@RequestBody User user, HttpSession session) throws UserNotFoundException, PhoneAlreadyTakenException, EmailAlreadyTakenException, UsernameAlreadyTakenException {
         User sessionUser = (User) session.getAttribute("user");
 
-        String username = user.getUsername() != null ? user.getUsername() : sessionUser.getUsername();
-        String email = user.getEmail() != null ? user.getEmail() : sessionUser.getEmail();
-        String phone = user.getPhone() != null ? user.getPhone() : sessionUser.getPhone();
-
-        sessionUser.setUsername(username);
-        sessionUser.setEmail(email);
-        sessionUser.setPhone(phone);
+        if (user.getUsername() != null) {
+            sessionUser.setUsername(user.getUsername());
+        }
+        if (user.getEmail() != null) {
+            sessionUser.setEmail(user.getEmail());
+        }
+        if (user.getPhone() != null) {
+            sessionUser.setPhone(user.getPhone());
+        }
 
         userService.updateUser(sessionUser);
         emailService.sendAccountUpdateEmail(sessionUser);

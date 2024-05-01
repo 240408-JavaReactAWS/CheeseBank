@@ -41,7 +41,7 @@ public class TransactionService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        if (user.getFrozen()) {
+        if (user.getIsFrozen()) {
             emailService.sendFrozenAccountEmail(user);
             throw new AccountFrozenException("Account is frozen");
         }
