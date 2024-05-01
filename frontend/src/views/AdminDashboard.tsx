@@ -1,9 +1,10 @@
 import React from 'react';
+import UserTable from '../components/UserTable/UserTable';
 
 const AdminDashboard: React.FC = () => {
   return (
     <div>
-      <h1>AdminDashboard</h1>
+      <UserTable />
     </div>
   );
 };

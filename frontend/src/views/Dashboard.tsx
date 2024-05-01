@@ -1,56 +1,32 @@
-// Dashboard.tsx
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSession } from '../context/SessionContext';
+import Profile from '../components/Profile/Profile';
+import Balance from '../components/Balance/Balance';
 import Transaction from '../components/Transaction/Transaction';
 import TransactionHistory from '../components/TransactionHistory/TransactionHistory';
 import './Dashboard.css';
-import axios from 'axios';
 
-function Dashboard() {
-    const [transactionsList, setTransactionsList] = useState([]);
-    const [user, setUser] = useState(null);
+const Dashboard: React.FC = () => {
+  const { sessionUser } = useSession();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        // Function to fetch user data and transaction history
-        const fetchData = async () => {
-            const currentUser = localStorage.getItem("username");
-            try {
-                const userResponse = await axios.get(`http://localhost:8080/api/users/username/${currentUser}`, {
-                    withCredentials: true
-                });
-                setUser(userResponse.data);
+  React.useEffect(() => {
+    if (!sessionUser) {
+      navigate('/login');
+    }
+  }, [sessionUser, navigate]);
 
-                const transactionsResponse = await axios.get(`http://localhost:8080/api/transactions/history/${currentUser}`, {
-                    withCredentials: true
-                });
-                setTransactionsList(transactionsResponse.data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    const updateTransactionHistory = async () => {
-        try {
-            const currentUser = localStorage.getItem("username");
-            const transactionsResponse = await axios.get(`http://localhost:8080/api/transactions/history/${currentUser}`, {
-                withCredentials: true
-            });
-            setTransactionsList(transactionsResponse.data);
-            
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    return (
-        <div className='dashboard-body'>
-            <Transaction updateTransactionHistory={updateTransactionHistory} />
-            <TransactionHistory updateTransactionHistory={function (): void {
-        } }  />
-        </div>
-    );
-}
+  return (
+    <div className="dashboard">
+      <div className="top">
+        <Profile />
+        <Balance />
+      </div>
+      <Transaction />
+      <TransactionHistory />
+    </div>
+  );
+};
 
 export default Dashboard;

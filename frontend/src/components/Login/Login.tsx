@@ -12,15 +12,14 @@ const Login: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`http://localhost:8080/api/users/login`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/login`, {
         username,
         password
       }, {
         withCredentials: true
       });
 
-      if (response.status === 200 || response.status === 201) {
-        localStorage.setItem('username', username);
+      if (response.status === 200) {
         navigate('/dashboard');
         console.log('Login successful');
       }
