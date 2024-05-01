@@ -24,8 +24,6 @@ const App: React.FC = () => {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/AdminDashboard" element={<AdminDashboard />} />
-          {/* <Route path="/Dashboard" element={<PrivateRoute element={<Dashboard />} roles={['USER']} redirectTo="/AdminDashboard" />} /> */}
-          {/* <Route path="/AdminDashboard" element={<PrivateRoute element={<AdminDashboard />} roles={['ADMIN']} redirectTo="/Dashboard" />} /> */}
           <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="/Locations" element={<Locations />} />
         </Routes>
