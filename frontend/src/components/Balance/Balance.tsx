@@ -34,15 +34,15 @@ function Balance() {
         <Col lg={3} className='balance-card mt-3 pt-2'>
           <Card>
             <Card.Body>
-              <Card.Title>Checking Account <em>({userId})</em></Card.Title>
-              <Card.Text>${balance}</Card.Text>
-              <Card.Subtitle className='mb-2 text-muted'>Available Balance</Card.Subtitle>
+              <Card.Title className="xtitle">Checking Account <em>({userId})</em></Card.Title>
+              <Card.Text className="amount">${balance}</Card.Text>
+              <Card.Subtitle className="subtitle mb-2 text-muted">Available Balance</Card.Subtitle>
             </Card.Body>
             <Card.Body>
-              <Card.Title>Credit Cards</Card.Title>
-              <Card.Text>Visa(5645)</Card.Text>
-              <Card.Text>${randomDollarAmount}</Card.Text>
-              <Card.Subtitle className='mb-2 text-muted'>Current Balance</Card.Subtitle>
+              <Card.Title className="xtitle">Credit Cards</Card.Title>
+              <Card.Text className="subtitle">Visa(5645)</Card.Text>
+              <Card.Text className="amount">${randomDollarAmount}</Card.Text>
+              <Card.Subtitle className="subtitle mb-2 text-muted">Current Balance</Card.Subtitle>
               <Button variant='primary'>Pay Now</Button>
               <Form.Check
                 type='switch'
