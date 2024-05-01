@@ -23,7 +23,12 @@ const Login: React.FC = () => {
 
       if (response.status === 200) {
         login(response.data);
-        navigate('/dashboard');
+        if (response.data.userType === 'ADMIN') {
+          navigate('/AdminDashboard');
+        }
+        if (response.data.userType === 'USER') {
+          navigate('/dashboard');
+        }
         console.log('Login successful');
       }
     } catch (error) {

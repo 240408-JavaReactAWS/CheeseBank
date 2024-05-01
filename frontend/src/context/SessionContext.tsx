@@ -4,8 +4,11 @@ import { User } from '../models/User'; // Adjust the import path according to yo
 
 interface SessionContextType {
   sessionUser: User | null;
+  sessionAdmin: User | null;
   login: (sessionUser: User) => void;
   logout: () => void;
+  validateAdminSession: () => Promise<void>;
+  validateUserSession: () => Promise<void>;
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
@@ -16,18 +19,36 @@ interface Props {
 
 export const SessionProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [admin, setAdmin] = useState<User | null>(null);
 
   const sessionUser = user;
+  const sessionAdmin = admin;
 
   const login = (newUser: User) => {
+    if (newUser.userType === 'ADMIN') {
+      setAdmin(newUser);
+    }
     setUser(newUser);
   };
 
   const logout = () => {
     setUser(null);
+    setAdmin(null);
   };
 
-  useEffect(() => {
+  const validateAdminSession = async () => {
+    axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users/admin`)
+      .then(response => {
+        if (response.data) {
+          setAdmin(response.data)
+        }
+      })
+      .catch(error => {
+        console.error('Error validating admin session:', error);
+      });
+  };
+
+  const validateUserSession = async () => {
     axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users/session`)
       .then(response => {
         if (response.data) {
@@ -35,12 +56,17 @@ export const SessionProvider: React.FC<Props> = ({ children }) => {
         }
       })
       .catch(error => {
-        console.error('Error getting session:', error);
+        console.error('Error validating user session:', error);
       });
+  }
+
+  useEffect(() => {
+    validateUserSession();
+    validateAdminSession();
   }, []);
 
   return (
-    <SessionContext.Provider value={{ sessionUser, login, logout }}>
+    <SessionContext.Provider value={{ sessionUser, sessionAdmin, login, logout, validateAdminSession, validateUserSession }}>
       {children}
     </SessionContext.Provider>
   );

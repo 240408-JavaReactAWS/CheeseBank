@@ -113,4 +113,10 @@ public class TransactionService {
         return transactionRepository.findByUserAndTransactionType(currentUser, transactionType, pageable);
     }
 
+    // Delete transactions by user
+    @Transactional
+    public void deleteTransactionsByUser(User user) {
+        transactionRepository.deleteByUser(user);
+    }
+
 }

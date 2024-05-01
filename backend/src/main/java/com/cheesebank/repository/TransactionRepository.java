@@ -16,5 +16,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     Page<Transaction> findByUser(User user, Pageable pageable);
     Page<Transaction> findByUserAndTimeStampBetween(User user, LocalDateTime start, LocalDateTime end, Pageable pageable);
     Page<Transaction> findByUserAndTransactionType(User user, TransactionType transactionType, Pageable pageable);
+    void deleteByUser(User user);
 
 }

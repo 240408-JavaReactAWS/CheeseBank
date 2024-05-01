@@ -5,6 +5,7 @@ import com.cheesebank.exception.*;
 import com.cheesebank.model.User;
 import com.cheesebank.model.UserType;
 import com.cheesebank.service.EmailService;
+import com.cheesebank.service.TransactionService;
 import com.cheesebank.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,14 @@ public class UserController {
 
     private final UserService userService;
 
+    private final TransactionService transactionService;
+
     private final EmailService emailService;
 
     @Autowired
-    public UserController(UserService userService, EmailService emailService) {
+    public UserController(UserService userService, TransactionService transactionService, EmailService emailService) {
         this.userService = userService;
+        this.transactionService = transactionService;
         this.emailService = emailService;
     }
 
@@ -121,7 +125,7 @@ public class UserController {
         String token = UUID.randomUUID().toString();
         possibleUser.setToken(token);
         userService.updateUser(possibleUser);
-        emailService.sendEmail(email, "Password Reset", "Dear " + possibleUser.getFirstName() + "," + "\n\nPlease click the link to reset your password: http://localhost:3000/reset-password?token=" + token + "\n\nCheese Bank");
+        emailService.sendEmail(email, "Cheese Bank - Password Reset", "Dear " + possibleUser.getFirstName() + " " + possibleUser.getLastName() + ",\n\nPlease click the link to reset your password:\n\nhttp://localhost:3000/reset-password?token=" + token + "\n\nIf you did not try to change your password, disregard this email.\n\nCheese Bank");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -253,6 +257,7 @@ public class UserController {
 
         User deletedUser = userService.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
+        transactionService.deleteTransactionsByUser(deletedUser);
         userService.deleteUser(deletedUser);
         System.out.println("User deleted");
         return ResponseEntity.ok("User deleted");

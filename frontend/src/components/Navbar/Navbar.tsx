@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
       withCredentials: true
     })
     .then((response) => {
-      console.log(response.data.username);
+      console.log('Logged in as user: ', response.data.username);
     })
     .catch((error) => {
       console.log('Error getting session: ', error);
@@ -39,7 +39,6 @@ const Navbar: React.FC = () => {
           <Link className="nav-item nav-link" to="/Locations">Find Locations and ATMs</Link>
         </div>
       </div>
-      <Button variant="outline-primary" onClick={(handleLogout)}>Temp</Button>
       {sessionUser && <Button variant="outline-primary" onClick={handleLogout}>Logout</Button>}
     </nav>
   );
