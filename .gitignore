@@ -18,8 +18,6 @@ HELP.md
 # AWS User-specific
 .idea/**/aws.xml
 
-#application specific files
-application.properties
 
 # Generated files
 .idea/**/contentModel.xml
