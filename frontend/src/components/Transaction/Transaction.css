@@ -1,118 +1,157 @@
-/* Transaction.css */
-
+/* Common styles for transaction body */
 .transaction-body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 50px 50px;
-    padding: 50px 50px;
-    background: linear-gradient(to bottom right, #e1e0e0, #fcfcfc);
+    justify-content: center;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #2d557e;
+    margin-top: 40px;
+
 }
 
+.input-container {
+    width: 100%;
+    max-width: 320px;
+    margin-bottom: 20px;
+}
 
+/* Button styles */
 .transaction-btn button {
-    padding: 10px 20px;
+    padding-bottom: 30px;
     margin: 10px 5px;
     font-size: 16px;
     cursor: pointer;
     border-radius: 5px;
-    display: inline-flex;
+
 }
 
+/* Deposit button */
 .depositTransaction {
-    background-color: #4CAF50;
+    background-color: #4caf50;
     color: white;
     border: none;
 }
 
+/* Withdrawal button */
 .withdrawalTransaction {
     background-color: #f44336;
     color: white;
     border: none;
 }
 
+/* Transfer button */
 .transferTransaction {
-    background-color: #008CBA;
+    background-color: #008cba;
     color: white;
     border: none;
+}
 
+/* Input styles */
+input {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+/* Add space between inputs */
+input:not(:last-child) {
+    margin-bottom: 8px;
 }
 
 
+/* Hover animation */
+.btn-primary:hover,
+.btn-success:hover,
+.btn-danger:hover {
+    transform: scale(0.85);
+}
+
+/* Animation */
 @keyframes zoomIn {
     from {
         transform: scale(1);
-
     }
 
     to {
         transform: scale(1.1);
-
     }
 }
 
-@keyframes zoomOut {
-    from {
-        transform: scale(1);
 
-    }
-
-    to {
-        transform: scale(.9);
-
-    }
-
-}
-
-
-.depositTransaction:hover,
-.withdrawalTransaction:hover,
-.transferTransaction:hover {
-    animation: zoomIn 0.3s forwards;
-
-}
-
-input {
-    padding: 10px;
-    margin: 5px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    display: flex;
-    width: 300px;
-
-}
-
-.depositBtn,
-.withdrawBtn,
-.transferBtn {
-    border: rgb(176, 176, 175) 1px solid;
+.balance-container {
+    border: 1px solid #122a6d;
     border-radius: 5px;
-    height: 30px;
-    color: rgb(5, 5, 5);
-    padding: 5px;
-    margin: 5px;
-}
+    padding: 10px;
+    background-color: #f8f9fa;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 
-.depositBtn {
-    background-color: #4CAF50;
 
-}
-
-.withdrawBtn {
-    background-color: #f44336;
 
 
 }
 
-.transferBtn {
-    background-color: #008CBA;
+.travel-container,
+.reward-container {
+    border: 1px solid #122a6d;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.reward-container h4,
+.travel-container h4 {
+    color: #122a6d;
+    font-size: 20px;
 
 
 }
 
-.depositBtn:hover,
-.withdrawBtn:hover,
-.transferBtn:hover {
-    animation: zoomOut 0.3s forwards;
+.reward-container p,
+.travel-container p {
+    color: #071554;
+    font-size: 12px;
+
+}
+
+
+
+.reward-container .btn {
+    font-size: 10px;
+    color: rgb(255, 255, 255);
+    background-color: #173cde;
+
+}
+
+.balance-inner-container p {
+    font-size: 12px;
+    font-family: Georgia, 'Times New Roman', Times, serif
+}
+
+.creditcard-container h4,
+.balance-inner-container h4 {
+    font-size: 20px;
+    color: #1d19f8;
+    font-family: Georgia, 'Times New Roman', Times, serif
+}
+
+
+.creditcard-container p {
+    font-size: 12px;
+    font-weight: 800;
+    font-family: Georgia, 'Times New Roman', Times, serif
+}
+
+.creditcard-container .btn {
+    font-size: 10px;
+    color: rgb(255, 255, 255);
+    background-color: #173cde;
+    margin-bottom: 20px;
+
 }

@@ -12,7 +12,7 @@ const ForgotPassword: React.FC = () => {
     const formData = new FormData();
     formData.append('email', email);
 
-    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/forgot-password`, formData)
+    axios.post(`http://localhost:8080/api/users/forgot-password`, formData)
       .then(() => {
         setIsModalOpen(true);
         setEmail('');

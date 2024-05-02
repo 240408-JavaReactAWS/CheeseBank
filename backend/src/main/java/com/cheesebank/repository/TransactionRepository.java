@@ -9,12 +9,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
     Page<Transaction> findByUser(User user, Pageable pageable);
-    Page<Transaction> findByUserAndTimeStampBetween(User user, LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    List<Transaction> findAllByUserUsername(String username);
+
+    Page<Transaction> findByUserAndTimeStampBetween(User user, LocalDateTime start, LocalDateTime end,
+            Pageable pageable);
+
     Page<Transaction> findByUserAndTransactionType(User user, TransactionType transactionType, Pageable pageable);
 
 }

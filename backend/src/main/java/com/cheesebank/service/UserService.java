@@ -24,7 +24,8 @@ public class UserService {
     private final EmailService emailService;
 
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, EmailService emailService) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder,
+            EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
@@ -32,10 +33,11 @@ public class UserService {
 
     // Register new user
     @Transactional
-    public User registerUser(User newUser) throws UsernameAlreadyTakenException, EmailAlreadyTakenException, PhoneAlreadyTakenException {
+    public User registerUser(User newUser)
+            throws UsernameAlreadyTakenException, EmailAlreadyTakenException, PhoneAlreadyTakenException {
         Optional<User> possibleUser = userRepository.findByUsername(newUser.getUsername());
         if (possibleUser.isPresent()) {
-            throw new UsernameAlreadyTakenException("Username: " + newUser.getUsername() +" was already taken!");
+            throw new UsernameAlreadyTakenException("Username: " + newUser.getUsername() + " was already taken!");
         }
 
         Optional<User> possibleEmail = userRepository.findByEmail(newUser.getEmail());
@@ -147,14 +149,16 @@ public class UserService {
 
     // Update user information
     @Transactional
-    public void updateUser(User updatedUser) throws UserNotFoundException, UsernameAlreadyTakenException, EmailAlreadyTakenException, PhoneAlreadyTakenException {
+    public void updateUser(User updatedUser) throws UserNotFoundException, UsernameAlreadyTakenException,
+            EmailAlreadyTakenException, PhoneAlreadyTakenException {
         User existingUser = userRepository.findById(updatedUser.getId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (!existingUser.getUsername().equals(updatedUser.getUsername())) {
             Optional<User> possibleUser = userRepository.findByUsername(updatedUser.getUsername());
             if (possibleUser.isPresent()) {
-                throw new UsernameAlreadyTakenException("Username: " + updatedUser.getUsername() +" was already taken!");
+                throw new UsernameAlreadyTakenException(
+                        "Username: " + updatedUser.getUsername() + " was already taken!");
             }
         }
         if (!existingUser.getEmail().equals(updatedUser.getEmail())) {
